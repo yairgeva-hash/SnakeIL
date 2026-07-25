@@ -35,6 +35,8 @@ export default function Home() {
   const [streak, setStreak] = useState(1);
   const [hearts, setHearts] = useState(MAX_HEARTS);
   const [completed, setCompleted] = useState<string[]>([]);
+  const [discovered, setDiscovered] = useState<string[]>(["palestine-viper"]);
+  const [pendingReveal, setPendingReveal] = useState<Species | null>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
@@ -46,13 +48,17 @@ export default function Home() {
     setXp(Number(localStorage.getItem("nature-detectives-xp") || 0));
     setStreak(Number(localStorage.getItem("nature-detectives-streak") || 1));
     setHearts(Number(localStorage.getItem("nature-detectives-hearts") || MAX_HEARTS));
-    setCompleted(JSON.parse(localStorage.getItem("nature-detectives-completed") || "[]"));
+    const storedCompleted = JSON.parse(localStorage.getItem("nature-detectives-completed") || "[]");
+    setCompleted(storedCompleted);
+    const storedDiscovered = JSON.parse(localStorage.getItem("nature-detectives-discovered") || "null");
+    setDiscovered(storedDiscovered || ["palestine-viper", ...storedCompleted.flatMap((id: string) => id === "safety" ? ["coin-marked-snake"] : id === "viper-vs-coin" ? ["black-whipsnake"] : [])]);
   }, []);
 
   const rank = xp < 100 ? "מטייל מתחיל" : xp < 250 ? "בלש צעיר" : xp < 500 ? "חוקר שטח" : "גשש נחשים";
   const rankIcon = xp < 100 ? "🥾" : xp < 250 ? "🔎" : xp < 500 ? "🌿" : "🐍";
   const rankProgress = Math.min(100, xp % 100);
-  const unlockedSpecies = Math.min(species.length, Math.max(1, completed.length * 2));
+  const unlockedSpecies = discovered.length;
+  const nextDiscovery = species.find((item) => !discovered.includes(item.id));
 
   const comparisonQuestions = useMemo<IdentifyQuestion[]>(() => {
     const viper = species.find((item) => item.id === "palestine-viper")!;
@@ -67,14 +73,16 @@ export default function Home() {
     ]);
   }, [activeLesson]);
 
-  function persist(nextXp = xp, nextCompleted = completed, nextHearts = hearts) {
+  function persist(nextXp = xp, nextCompleted = completed, nextHearts = hearts, nextDiscovered = discovered) {
     setXp(nextXp);
     setCompleted(nextCompleted);
     setHearts(nextHearts);
+    setDiscovered(nextDiscovered);
     localStorage.setItem("nature-detectives-xp", String(nextXp));
     localStorage.setItem("nature-detectives-streak", String(streak));
     localStorage.setItem("nature-detectives-completed", JSON.stringify(nextCompleted));
     localStorage.setItem("nature-detectives-hearts", String(nextHearts));
+    localStorage.setItem("nature-detectives-discovered", JSON.stringify(nextDiscovered));
   }
 
   function launchReward(label: string) {
@@ -115,12 +123,20 @@ export default function Home() {
     const alreadyDone = completed.includes(lessonId);
     const nextCompleted = alreadyDone ? completed : [...completed, lessonId];
     const bonus = Math.round((correctAnswers / Math.max(1, questionIndex + 1)) * 20);
-    persist(alreadyDone ? xp : xp + earnedXp + bonus, nextCompleted, Math.min(MAX_HEARTS, hearts + 1));
+    const lessonUnlocks: Record<string, string> = {
+      safety: "coin-marked-snake",
+      "viper-vs-coin": "black-whipsnake"
+    };
+    const rewardSpecies = species.find((item) => item.id === lessonUnlocks[lessonId]);
+    const isNewDiscovery = Boolean(rewardSpecies && !discovered.includes(rewardSpecies.id));
+    const nextDiscovered = isNewDiscovery && rewardSpecies ? [...discovered, rewardSpecies.id] : discovered;
+    persist(alreadyDone ? xp : xp + earnedXp + bonus, nextCompleted, Math.min(MAX_HEARTS, hearts + 1), nextDiscovered);
     launchReward(`+${alreadyDone ? bonus : earnedXp + bonus} XP`);
     setScreen("journey");
     setActiveLesson(null);
     setQuestionIndex(0);
     setSelected(null);
+    if (isNewDiscovery && rewardSpecies) window.setTimeout(() => setPendingReveal(rewardSpecies), 350);
   }
 
   function resetProgress() {
@@ -130,6 +146,8 @@ export default function Home() {
     setXp(0);
     setHearts(MAX_HEARTS);
     setCompleted([]);
+    setDiscovered(["palestine-viper"]);
+    localStorage.removeItem("nature-detectives-discovered");
   }
 
   const comparison = comparisonQuestions[questionIndex];
@@ -202,6 +220,12 @@ export default function Home() {
             <div><span className="metric-label">XP שנאסף</span><strong>{xp}</strong></div>
             <div className="rank-progress" aria-label="התקדמות לדרגה הבאה"><span style={{ width: `${rankProgress}%` }} /></div>
             <div><span className="metric-label">מינים ביומן</span><strong>{unlockedSpecies}/{species.length}</strong></div>
+          </div>
+
+          <div className="discovery-teaser">
+            <div className="discovery-seal">{nextDiscovery ? "?" : "✓"}</div>
+            <div><span>התגלית הבאה ביומן</span><strong>{nextDiscovery ? "מין מסתורי מחכה בסוף המשלחת" : "אספת את כל המינים בגרסה הזו"}</strong></div>
+            <b>{unlockedSpecies}/{species.length}</b>
           </div>
 
           <div className="quick-grid">
@@ -283,7 +307,7 @@ export default function Home() {
           </div>
           <div className="journal-list">
             {species.map((item, index) => {
-              const unlocked = index < unlockedSpecies;
+              const unlocked = discovered.includes(item.id);
               return <article key={item.id} className={`journal-entry ${unlocked ? "" : "locked"}`}><div className="page-number">{String(index + 1).padStart(2, "0")}</div><div><span className="handwritten">{unlocked ? "זוהה ביומן" : "טרם נצפה"}</span><h2>{unlocked ? item.name : "מין מסתורי"}</h2><p>{unlocked ? item.identificationClues[0] : "השלימו עוד משלחות כדי לפתוח את העמוד."}</p></div><b>{unlocked ? "✓" : "?"}</b></article>;
             })}
           </div>
@@ -298,12 +322,34 @@ export default function Home() {
               const approved = item.media.find((media) => media.approved);
               const visibleImage = approved && !imageErrors[item.id];
               return <article className="snake-card" key={item.id}>
-                <div className="image-wrap">{visibleImage ? <img src={approved.src} alt={approved.alt} onError={() => setImageErrors((value) => ({ ...value, [item.id]: true }))} /> : <div className="image-placeholder"><span>{index < unlockedSpecies ? "📷" : "🔒"}</span><strong>{index < unlockedSpecies ? "תמונה מאומתת תתווסף כאן" : "הקלף עדיין נעול"}</strong></div>}</div>
-                <div className="card-body"><div className="title-row"><div><h2>{index < unlockedSpecies ? item.name : "מין מסתורי"}</h2><small>{index < unlockedSpecies ? item.scientificName : "Complete a mission"}</small></div><span className={`tag ${riskClass(item.status)}`}>{index < unlockedSpecies ? item.status : "נעול"}</span></div>{index < unlockedSpecies && <><p>{item.region}</p><div className="clue"><strong>רמזי זיהוי</strong><ul>{item.identificationClues.slice(0, 2).map((clue) => <li key={clue}>{clue}</li>)}</ul></div><p className="safety-note">🛡️ {item.safetyNote}</p></>}</div>
+                <div className="image-wrap">{visibleImage ? <img src={approved.src} alt={approved.alt} onError={() => setImageErrors((value) => ({ ...value, [item.id]: true }))} /> : <div className="image-placeholder"><span>{discovered.includes(item.id) ? "📷" : "🔒"}</span><strong>{discovered.includes(item.id) ? "תמונה מאומתת תתווסף כאן" : "הקלף עדיין נעול"}</strong></div>}</div>
+                <div className="card-body"><div className="title-row"><div><h2>{discovered.includes(item.id) ? item.name : "מין מסתורי"}</h2><small>{discovered.includes(item.id) ? item.scientificName : "השלימו משלחת כדי לגלות"}</small></div><span className={`tag ${riskClass(item.status)}`}>{discovered.includes(item.id) ? item.status : "נעול"}</span></div>{discovered.includes(item.id) && <><p>{item.region}</p><div className="clue"><strong>רמזי זיהוי</strong><ul>{item.identificationClues.slice(0, 2).map((clue) => <li key={clue}>{clue}</li>)}</ul></div><p className="safety-note">🛡️ {item.safetyNote}</p></>}</div>
               </article>;
             })}
           </div>
         </section>
+      )}
+
+      {pendingReveal && (
+        <div className="reveal-overlay" role="dialog" aria-modal="true" aria-labelledby="reveal-title">
+          <div className="leaf-burst" aria-hidden="true">{["🍃","🌿","🍂","🍃","🌱","🍂","🌿","🍃"].map((leaf, index) => <span key={index} style={{ "--leaf-index": index } as React.CSSProperties}>{leaf}</span>)}</div>
+          <section className="reveal-panel">
+            <span className="reveal-kicker">תגלית חדשה!</span>
+            <div className="species-reveal-card">
+              <div className="reveal-card-face">
+                <span className="reveal-number">עמוד {String(discovered.indexOf(pendingReveal.id) + 1).padStart(2, "0")}</span>
+                <div className="reveal-photo-placeholder">🐍</div>
+                <h1 id="reveal-title">{pendingReveal.name}</h1>
+                <em>{pendingReveal.scientificName}</em>
+                <p>{pendingReveal.identificationClues[0]}</p>
+                <span className={`tag ${riskClass(pendingReveal.status)}`}>{pendingReveal.status}</span>
+              </div>
+            </div>
+            <p className="reveal-copy">הקלף נוסף לאוסף ועמוד חדש נפתח ביומן השדה.</p>
+            <button className="primary reveal-action" onClick={() => { setPendingReveal(null); setScreen("journal"); }}>📖 פתח את יומן השדה</button>
+            <button className="reveal-skip" onClick={() => setPendingReveal(null)}>המשך במסלול</button>
+          </section>
+        </div>
       )}
     </main>
   );
