@@ -1,14 +1,12 @@
-# Snake Rangers Israel — v0.7
+# Snake Rangers Israel — v0.8.1
 
-Milestone 3.1 adds a verified, locally hosted real-photo media library.
+משחק לימודי לזיהוי נחשים בישראל, המבוסס על צילומים אמיתיים ושיטת עבודה של בלש טבע.
 
-## Included
-- 7 Palestine viper photographs
-- 5 coin-marked snake photographs
-- optimized WebP files under `public/images/snakes/`
-- ownership, difficulty and educational tags in `app/data.ts`
-- real-photo identification questions
-- album photo counts and automatic credits
-- real photograph in species reveal cards
+## חדש בגרסה 0.8.1
 
-All included photographs are owned by Yair.
+- לולאת חקירה בשלושה שלבים: מתבוננים, מזהים ובודקים ביטחון.
+- משוב שמלמד אילו רמזים אמינים יותר ואילו עלולים להטעות.
+- דיווח עצמי: בטוח, די בטוח או ניחוש — ללא פגיעה בציון.
+- חיזוק הכלל שמותר לא להיות בטוחים ושבטיחות קודמת לזיהוי.
+
+כל הצילומים במאגר הנוכחי הם בבעלות יוצר הפרויקט.

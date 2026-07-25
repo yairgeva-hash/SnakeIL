@@ -143,3 +143,19 @@ body{
 .media-strip small{color:var(--muted)}
 .reveal-photo{width:100%;height:145px;margin:10px 0 14px;border-radius:17px;object-fit:cover;display:block;animation:photoBreath 3s ease-in-out infinite}
 @media(max-width:520px){.photo-meta{align-items:flex-start;flex-direction:column}.field-photo-wrap{aspect-ratio:4/3}.media-strip{flex-direction:column;gap:2px}}
+
+/* Milestone 3.2 — detective learning loop */
+.detective-photo{position:relative}.clue-stamp{position:absolute;left:12px;bottom:12px;padding:7px 10px;border-radius:10px;background:rgba(32,79,58,.9);color:#fff;font-size:.76rem;font-weight:900;transform:rotate(-2deg);box-shadow:0 5px 14px rgba(0,0,0,.2)}
+.detective-step{display:flex;align-items:center;gap:12px;margin:18px 0 10px;padding:12px 14px;border-radius:18px;background:#f1f4e9;border:1px dashed rgba(32,79,58,.22)}.detective-step>span{flex:0 0 38px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--forest);color:#fff;font-family:Georgia,serif;font-size:1.1rem;font-weight:900}.detective-step strong,.detective-step small{display:block}.detective-step small{margin-top:3px;color:var(--muted);line-height:1.4}
+.observation-list button.selected-neutral{background:#fff2d8;border-color:#d6ad58!important}.observation-note,.confidence-note{margin-top:18px;padding:18px;border-radius:20px;animation:slideUp .3s ease}.observation-note.sharp{background:#e8f6e2;border:1px solid #b7d9af}.observation-note.coach{background:#fff2d8;border:1px solid #e3c98e}.observation-note strong,.confidence-note strong{font-size:1.03rem}.observation-note p,.confidence-note p{line-height:1.55;color:var(--muted);margin:8px 0 15px}
+.confidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.confidence-grid button{min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#fff;border:2px solid #d9dfd4!important}.confidence-grid button.active{background:#e8f6e2;border-color:#5fa66a!important;transform:translateY(-2px)}.confidence-grid span{font-size:2rem}.confidence-grid strong{margin:7px 0 3px}.confidence-grid small{color:var(--muted);line-height:1.35}.confidence-note{background:#edf3e8;border:1px solid #bfd1b9}
+@media(max-width:620px){.confidence-grid{grid-template-columns:1fr}.confidence-grid button{min-height:88px;display:grid;grid-template-columns:52px 1fr;text-align:right;justify-items:start}.confidence-grid span{grid-row:1/3}.confidence-grid strong{align-self:end}.confidence-grid small{align-self:start}}
+
+/* v0.8.1 — explanatory, click-to-dismiss intro */
+.opening-clickable{cursor:pointer;outline:none}
+.opening-clickable:focus-visible{box-shadow:0 0 0 5px rgba(47,107,76,.28),0 28px 80px rgba(32,79,58,.18)}
+.opening-summary{max-width:470px;margin:0 auto 20px!important;line-height:1.65!important}
+.opening-facts{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:0 auto 24px}
+.opening-facts span{padding:8px 11px;border-radius:999px;background:rgba(232,239,222,.9);border:1px solid rgba(32,79,58,.13);font-size:.8rem;font-weight:900;color:var(--forest)}
+.opening-dismiss{font-weight:800;opacity:.78}
+@media(max-width:520px){.opening-summary{font-size:.96rem!important;line-height:1.55!important}.opening-facts{gap:6px;margin-bottom:20px}.opening-facts span{font-size:.72rem;padding:7px 9px}.opening-card{padding-top:30px;padding-bottom:30px}.opening-kicker{margin-bottom:10px}.opening-emblem{margin-bottom:9px}}
