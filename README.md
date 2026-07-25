@@ -1,27 +1,14 @@
-# בלשי הנחשים — גרסת אבטיפוס
+# Snake Rangers Israel — v0.7
 
-אפליקציית Web בעברית ללימוד זיהוי נחשים בישראל לילדים בגילאי 6–12.
+Milestone 3.1 adds a verified, locally hosted real-photo media library.
 
-## מה כבר עובד
-- מסך בית מותאם לנייד
-- אלבום של 10 מינים
-- משחק זיהוי בן 10 שאלות
-- ניקוד ושמירת שיא במכשיר
-- מסך כללי בטיחות
-- אין הרשמה ואין איסוף מידע אישי
+## Included
+- 7 Palestine viper photographs
+- 5 coin-marked snake photographs
+- optimized WebP files under `public/images/snakes/`
+- ownership, difficulty and educational tags in `app/data.ts`
+- real-photo identification questions
+- album photo counts and automatic credits
+- real photograph in species reveal cards
 
-## התמונות
-בכוונה לא צורפו תמונות אקראיות או תמונות AI. יש להכניס רק צילומים אמיתיים, מאומתים ובעלי רישיון שימוש לתיקייה `public/snakes`, לפי שמות הקבצים שכבר מוגדרים בקוד.
-
-## פרסום דרך GitHub ו-Vercel
-1. פתחו Repository חדש ב-GitHub בשם `snake-rangers-israel`.
-2. העלו אליו את כל תוכן התיקייה הזאת.
-3. ב-Vercel לחצו Add New > Project.
-4. בחרו את ה-Repository ולחצו Deploy.
-5. אין צורך לשנות Build Settings או להוסיף Environment Variables.
-
-## פיתוח מקומי למתקדמים
-```bash
-npm install
-npm run dev
-```
+All included photographs are owned by Yair.

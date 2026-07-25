@@ -129,3 +129,17 @@ body{
 @keyframes leafBurst{0%{opacity:0;transform:translate(-50%,-50%) rotate(0) scale(.5)}18%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) rotate(340deg) scale(1.1)}}
 @keyframes photoBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
 @media(max-width:520px){.discovery-teaser{grid-template-columns:46px 1fr}.discovery-teaser>b{grid-column:2}.discovery-seal{width:42px;height:42px}.reveal-panel{padding:25px 18px 19px}.species-reveal-card{width:88%}}
+
+
+/* Milestone 3.1 — verified real-photo media library */
+.photo-question-card{overflow:hidden;margin:14px 0 22px;border:1px solid rgba(32,79,58,.18);border-radius:24px;background:#fff;box-shadow:0 15px 32px rgba(31,68,49,.12)}
+.field-photo-wrap{position:relative;aspect-ratio:16/10;background:#dfe7da;overflow:hidden}
+.field-photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.difficulty{position:absolute;top:12px;right:12px;padding:6px 10px;border-radius:999px;background:rgba(255,253,246,.92);font-size:.76rem;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.14)}
+.difficulty-1{color:#25643f}.difficulty-2{color:#8a5b14}.difficulty-3{color:#8c352e}
+.photo-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 14px;color:var(--muted);font-size:.78rem}
+.photo-meta span{font-weight:850}.photo-meta small{text-align:left}
+.media-strip{display:flex;justify-content:space-between;gap:10px;padding:8px 13px;background:#edf3e8;border-top:1px solid rgba(32,79,58,.1);color:var(--forest);font-size:.75rem;font-weight:850}
+.media-strip small{color:var(--muted)}
+.reveal-photo{width:100%;height:145px;margin:10px 0 14px;border-radius:17px;object-fit:cover;display:block;animation:photoBreath 3s ease-in-out infinite}
+@media(max-width:520px){.photo-meta{align-items:flex-start;flex-direction:column}.field-photo-wrap{aspect-ratio:4/3}.media-strip{flex-direction:column;gap:2px}}

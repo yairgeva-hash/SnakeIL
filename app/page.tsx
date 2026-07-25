@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { lessons, safetyQuestions, species, type Lesson, type Species } from "./data";
+import { lessons, safetyQuestions, species, type Lesson, type MediaAsset, type Species } from "./data";
 
 type Screen = "intro" | "home" | "journey" | "lesson" | "album" | "safety" | "journal";
 type IdentifyQuestion = {
@@ -11,6 +11,7 @@ type IdentifyQuestion = {
   choices: string[];
   correct: number;
   explanation: string;
+  photo: MediaAsset;
 };
 
 type Reward = { id: number; label: string };
@@ -64,12 +65,12 @@ export default function Home() {
     const viper = species.find((item) => item.id === "palestine-viper")!;
     const coin = species.find((item) => item.id === "coin-marked-snake")!;
     return shuffled([
-      { type: "clue", snake: viper, prompt: "איזה מין מתאים לרמזים האלה?", choices: [viper.name, coin.name], correct: 0, explanation: "לצפע בדרך כלל גוף מוצק ועבה יותר ודגם גב בולט. עדיין לא מזהים לפי סימן יחיד." },
-      { type: "clue", snake: coin, prompt: "איזה מין מתאים לרמזים האלה?", choices: [viper.name, coin.name], correct: 1, explanation: "לזעמן מטבעות גוף דק וארוך יותר בדרך כלל וכתמים המזכירים מטבעות." },
-      { type: "compare", snake: viper, prompt: "למי בדרך כלל גוף עבה ומוצק יותר?", choices: [viper.name, coin.name], correct: 0, explanation: "מבנה הגוף הוא רמז שימושי, אך חייבים לצרף אליו רמזים נוספים." },
-      { type: "compare", snake: coin, prompt: "למי בדרך כלל גוף דק וארוך יותר?", choices: [viper.name, coin.name], correct: 1, explanation: "הזעמן נראה לרוב מוארך ועדין יותר מהצפע." },
-      { type: "reason", snake: coin, prompt: "איזה רמז תומך יותר בזיהוי זעמן מטבעות?", choices: ["כתמים דמויי מטבעות", "גוף עבה מאוד", "עצם הימצאותו ליד בית"], correct: 0, explanation: "מקום המפגש לבדו אינו מספיק. דגם הגוף ומבנהו מספקים רמזים טובים יותר." },
-      { type: "reason", snake: viper, prompt: "מהו הכלל החשוב ביותר גם כשנדמה שזיהינו?", choices: ["מתקרבים לבדוק את הראש", "שומרים מרחק ולא נוגעים", "מרימים בעזרת מקל"], correct: 1, explanation: "המטרה היא ללמוד להתבונן — לא להסתכן. זיהוי באפליקציה אינו אישור להתקרב בשטח." }
+      { type: "clue", snake: viper, photo: viper.media[1], prompt: "איזה מין מצולם כאן?", choices: [viper.name, coin.name], correct: 0, explanation: "שימו לב לגוף המוצק ולדגם הגב הבולט. עדיין לא מזהים נחש לפי סימן יחיד." },
+      { type: "clue", snake: coin, photo: coin.media[0], prompt: "איזה מין מצולם כאן?", choices: [viper.name, coin.name], correct: 1, explanation: "הכתמים דמויי המטבעות והגוף המוארך תומכים בזיהוי זעמן מטבעות." },
+      { type: "compare", snake: viper, photo: viper.media[4], prompt: "איזה רמז בולט יותר בצילום הזה?", choices: ["גוף עבה ומוצק", "גוף דק וארוך"], correct: 0, explanation: "מבנה הגוף הוא רמז שימושי, אך חייבים לצרף אליו את דגם הגב ורמזים נוספים." },
+      { type: "compare", snake: coin, photo: coin.media[2], prompt: "איזה רמז תומך בזיהוי המצולם?", choices: ["כתמים דמויי מטבעות", "פס גב רציף בלבד"], correct: 0, explanation: "הכתמים הנפרדים המזכירים מטבעות הם רמז חשוב אצל הזעמן." },
+      { type: "reason", snake: coin, photo: coin.media[4], prompt: "הנחש מוסווה. מה נכון לעשות קודם?", choices: ["להתקרב כדי לראות את הראש", "לבחון כמה רמזים מרחוק", "לגעת בזנב כדי שיזוז"], correct: 1, explanation: "בצילום שטח קשה נעזרים במבנה הגוף, בדגם ובסביבה — אך לעולם לא מתקרבים כדי לוודא." },
+      { type: "reason", snake: viper, photo: viper.media[5], prompt: "מהו הכלל החשוב ביותר גם כשנדמה שזיהינו?", choices: ["מתקרבים לבדוק", "שומרים מרחק ולא נוגעים", "מרימים בעזרת מקל"], correct: 1, explanation: "המטרה היא ללמוד להתבונן — לא להסתכן. זיהוי באפליקציה אינו אישור להתקרב בשטח." }
     ]);
   }, [activeLesson]);
 
@@ -283,10 +284,15 @@ export default function Home() {
           <ChallengeHeader onClose={() => setScreen("journey")} progress={((questionIndex + 1) / comparisonQuestions.length) * 100} icon="👀" />
           <div className="challenge-card">
             <span className="question-label">צפע מול זעמן · {questionIndex + 1}/{comparisonQuestions.length}</span>
-            <div className="comparison-card">
-              <div className="specimen-label"><span>דוגמה 0{questionIndex + 1}</span><b>{comparison.snake.name}</b></div>
-              <ul>{comparison.snake.identificationClues.map((clue) => <li key={clue}>{clue}</li>)}</ul>
-              <small>{comparison.snake.status} · {comparison.snake.habitat}</small>
+            <div className="photo-question-card">
+              <div className="field-photo-wrap">
+                <img src={comparison.photo.src} alt={comparison.photo.alt} />
+                <span className={`difficulty difficulty-${comparison.photo.difficulty}`}>{comparison.photo.difficulty === 1 ? "קל" : comparison.photo.difficulty === 2 ? "בינוני" : "מצב שטח"}</span>
+              </div>
+              <div className="photo-meta">
+                <span>צילום אמיתי · © {comparison.photo.photographer}</span>
+                <small>{comparison.photo.tags.join(" · ")}</small>
+              </div>
             </div>
             <h1>{comparison.prompt}</h1>
             <div className={`choice-list ${comparison.choices.length === 2 ? "two" : ""}`}>
@@ -316,13 +322,14 @@ export default function Home() {
 
       {screen === "album" && (
         <section className="content notebook-page">
-          <div className="section-heading"><div><span className="eyebrow">אוסף המינים</span><h1>עשרת הנחשים הראשונים</h1><p>התמונות האמיתיות ייכנסו לכאן לאחר אימות המין, הצלם והרישיון.</p></div><button className="ghost" onClick={() => setScreen("home")}>חזרה למחנה</button></div>
+          <div className="section-heading"><div><span className="eyebrow">אוסף המינים</span><h1>עשרת הנחשים הראשונים</h1><p>מאגר התמונות האמיתי נפתח. לכל צילום נשמרים בעלות, תגיות ורמת קושי.</p></div><button className="ghost" onClick={() => setScreen("home")}>חזרה למחנה</button></div>
           <div className="grid">
             {species.map((item, index) => {
               const approved = item.media.find((media) => media.approved);
               const visibleImage = approved && !imageErrors[item.id];
               return <article className="snake-card" key={item.id}>
                 <div className="image-wrap">{visibleImage ? <img src={approved.src} alt={approved.alt} onError={() => setImageErrors((value) => ({ ...value, [item.id]: true }))} /> : <div className="image-placeholder"><span>{discovered.includes(item.id) ? "📷" : "🔒"}</span><strong>{discovered.includes(item.id) ? "תמונה מאומתת תתווסף כאן" : "הקלף עדיין נעול"}</strong></div>}</div>
+                {visibleImage && discovered.includes(item.id) && <div className="media-strip"><span>📷 {item.media.filter((media) => media.approved).length} צילומים מאומתים</span><small>© {approved.photographer}</small></div>}
                 <div className="card-body"><div className="title-row"><div><h2>{discovered.includes(item.id) ? item.name : "מין מסתורי"}</h2><small>{discovered.includes(item.id) ? item.scientificName : "השלימו משלחת כדי לגלות"}</small></div><span className={`tag ${riskClass(item.status)}`}>{discovered.includes(item.id) ? item.status : "נעול"}</span></div>{discovered.includes(item.id) && <><p>{item.region}</p><div className="clue"><strong>רמזי זיהוי</strong><ul>{item.identificationClues.slice(0, 2).map((clue) => <li key={clue}>{clue}</li>)}</ul></div><p className="safety-note">🛡️ {item.safetyNote}</p></>}</div>
               </article>;
             })}
@@ -338,7 +345,7 @@ export default function Home() {
             <div className="species-reveal-card">
               <div className="reveal-card-face">
                 <span className="reveal-number">עמוד {String(discovered.indexOf(pendingReveal.id) + 1).padStart(2, "0")}</span>
-                <div className="reveal-photo-placeholder">🐍</div>
+                {pendingReveal.media.find((media) => media.approved) ? <img className="reveal-photo" src={pendingReveal.media.find((media) => media.approved)!.src} alt={pendingReveal.media.find((media) => media.approved)!.alt} /> : <div className="reveal-photo-placeholder">🐍</div>}
                 <h1 id="reveal-title">{pendingReveal.name}</h1>
                 <em>{pendingReveal.scientificName}</em>
                 <p>{pendingReveal.identificationClues[0]}</p>

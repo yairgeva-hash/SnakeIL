@@ -45,6 +45,23 @@ const pendingPhoto = (speciesId: string, hebrewName: string): MediaAsset => ({
   approved: false
 });
 
+
+const ownedPhoto = (
+  speciesId: string,
+  fileNumber: string,
+  hebrewName: string,
+  difficulty: 1 | 2 | 3,
+  tags: string[]
+): MediaAsset => ({
+  src: `/images/snakes/${speciesId}/${speciesId}-${fileNumber}.webp`,
+  alt: `${hebrewName} — צילום שטח אמיתי`,
+  photographer: "Yair",
+  license: "© Yair · כל הזכויות שמורות",
+  tags,
+  difficulty,
+  approved: true
+});
+
 export const species: Species[] = [
   {
     id: "palestine-viper",
@@ -57,7 +74,15 @@ export const species: Species[] = [
     identificationClues: ["גוף מוצק ועבה יחסית", "דגם גב כהה ובולט", "לא מזהים לפי סימן יחיד"],
     safetyNote: "שומרים מרחק ולא מנסים לבדוק מאפיינים מקרוב.",
     similarSpecies: ["coin-marked-snake"],
-    media: [pendingPhoto("palestine-viper", "צפע מצוי")]
+    media: [
+      ownedPhoto("palestine-viper", "01", "צפע מצוי", 1, ["תקריב", "ראש", "דוגמת גב"]),
+      ownedPhoto("palestine-viper", "02", "צפע מצוי", 1, ["גוף מלא", "דוגמת גב", "בוגר"]),
+      ownedPhoto("palestine-viper", "03", "צפע מצוי", 2, ["גוף מלא", "סביבה טבעית"]),
+      ownedPhoto("palestine-viper", "04", "צפע מצוי", 1, ["גוף מלא", "דוגמת גב ברורה"]),
+      ownedPhoto("palestine-viper", "05", "צפע מצוי", 2, ["זווית שטח", "מבנה גוף"]),
+      ownedPhoto("palestine-viper", "06", "צפע מצוי", 3, ["הסוואה", "מצב שטח"]),
+      ownedPhoto("palestine-viper", "07", "צפע מצוי", 3, ["הסוואה", "מצב שטח"])
+    ]
   },
   {
     id: "coin-marked-snake",
@@ -70,7 +95,13 @@ export const species: Species[] = [
     identificationClues: ["כתמים המזכירים מטבעות", "גוף דק וארוך יותר בדרך כלל", "עשוי להידמות לצפע"],
     safetyNote: "גם כשחושבים שמדובר במין לא ארסי — לא נוגעים.",
     similarSpecies: ["palestine-viper"],
-    media: [pendingPhoto("coin-marked-snake", "זעמן מטבעות")]
+    media: [
+      ownedPhoto("coin-marked-snake", "01", "זעמן מטבעות", 1, ["גוף מלא", "כתמי מטבעות"]),
+      ownedPhoto("coin-marked-snake", "02", "זעמן מטבעות", 2, ["סביבה טבעית", "מבנה גוף"]),
+      ownedPhoto("coin-marked-snake", "03", "זעמן מטבעות", 1, ["דוגמת גב", "כתמי מטבעות"]),
+      ownedPhoto("coin-marked-snake", "04", "זעמן מטבעות", 2, ["זווית שטח", "גוף מלא"]),
+      ownedPhoto("coin-marked-snake", "05", "זעמן מטבעות", 3, ["הסוואה", "מצב שטח"])
+    ]
   },
   {
     id: "black-whipsnake",
