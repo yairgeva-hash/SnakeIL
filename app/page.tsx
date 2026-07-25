@@ -2,26 +2,62 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-type Snake = {
+type Species = {
   id: string;
   name: string;
+  scientificName: string;
   status: "ארסי" | "תת־ארסי" | "לא ארסי";
   region: string;
+  habitat: string;
   clue: string;
   image: string;
 };
 
-const snakes: Snake[] = [
-  { id: "palestine-viper", name: "צפע מצוי", status: "ארסי", region: "צפון הארץ, המרכז ועד צפון הנגב", clue: "גוף עבה ודגם גב בולט; אין להסתמך על סימן יחיד לזיהוי.", image: "/snakes/palestine-viper.jpg" },
-  { id: "coin-marked-snake", name: "זעמן מטבעות", status: "לא ארסי", region: "צפון הארץ ומרכזה", clue: "כתמים דמויי מטבעות וגוף דק יחסית; עלול להידמות לצפע.", image: "/snakes/coin-marked-snake.jpg" },
-  { id: "black-whipsnake", name: "זעמן שחור", status: "לא ארסי", region: "צפון הארץ ומרכזה", clue: "הבוגרים שחורים וארוכים מאוד; הצעירים נראים שונים.", image: "/snakes/black-whipsnake.jpg" },
-  { id: "olive-whipsnake", name: "זעמן זיתני", status: "לא ארסי", region: "החבל הים־תיכוני", clue: "נחש דק ומהיר, בגוון זית עד חום.", image: "/snakes/olive-whipsnake.jpg" },
-  { id: "dice-snake", name: "נחש מים משובץ", status: "לא ארסי", region: "ליד נחלים, בריכות ומקווי מים", clue: "דגם משובץ וקשר חזק לבתי גידול מימיים.", image: "/snakes/dice-snake.jpg" },
-  { id: "large-whip-snake", name: "תלום־קשקשים מצוי", status: "תת־ארסי", region: "מרבית אזורי הארץ שאינם מדבר קיצוני", clue: "נחש גדול ומהיר; הארס מותאם בעיקר לטרף ואינו מוזרק בקלות לאדם.", image: "/snakes/large-whip-snake.jpg" },
-  { id: "saw-scaled-viper", name: "אפעה מגוון", status: "ארסי", region: "בקעת הירדן, מדבר יהודה, הנגב והערבה", clue: "דגם צבעוני־מדברי וקשקשים היוצרים קול חיכוך בעת איום.", image: "/snakes/saw-scaled-viper.jpg" },
-  { id: "desert-horned-viper", name: "עכן גדול", status: "ארסי", region: "חולות הנגב והערבה", clue: "מותאם לחול, גוף מוצק ולעיתים קרניים מעל העיניים.", image: "/snakes/desert-horned-viper.jpg" },
-  { id: "black-desert-cobra", name: "פתן שחור", status: "ארסי", region: "הנגב, מדבר יהודה והערבה", clue: "שחור מבריק ובעל ארס עצבי; לרוב נמנע ממפגש.", image: "/snakes/black-desert-cobra.jpg" },
-  { id: "engedi-burrowing-asp", name: "שרף עין גדי", status: "ארסי", region: "מדבר יהודה, בקעת ים המלח והערבה", clue: "קטן, כהה וחופר; מבנה הניבים מאפשר הכשה גם מצדי הראש.", image: "/snakes/engedi-burrowing-asp.jpg" }
+type Lesson = {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  xp: number;
+  kind: "safety" | "identify" | "album";
+  available: boolean;
+};
+
+const species: Species[] = [
+  { id: "palestine-viper", name: "צפע מצוי", scientificName: "Daboia palaestinae", status: "ארסי", region: "הצפון, המרכז ועד צפון הנגב", habitat: "חורש, שדות וסביבת יישובים", clue: "גוף עבה ודגם גב בולט. לעולם לא מסתמכים על סימן יחיד.", image: "/snakes/palestine-viper.jpg" },
+  { id: "coin-marked-snake", name: "זעמן מטבעות", scientificName: "Hemorrhois nummifer", status: "לא ארסי", region: "צפון הארץ ומרכזה", habitat: "אזורים סלעיים, חורש ויישובים", clue: "כתמים דמויי מטבעות וגוף דק יחסית; עלול להידמות לצפע.", image: "/snakes/coin-marked-snake.jpg" },
+  { id: "black-whipsnake", name: "זעמן שחור", scientificName: "Dolichophis jugularis", status: "לא ארסי", region: "צפון הארץ ומרכזה", habitat: "שדות, חורש ושולי יישובים", clue: "הבוגרים שחורים וארוכים מאוד; הצעירים נראים שונים.", image: "/snakes/black-whipsnake.jpg" },
+  { id: "olive-whipsnake", name: "זעמן זיתני", scientificName: "Platyceps collaris", status: "לא ארסי", region: "החבל הים־תיכוני", habitat: "חורש, בתה ואזורים סלעיים", clue: "נחש דק ומהיר בגוון זית עד חום.", image: "/snakes/olive-whipsnake.jpg" },
+  { id: "dice-snake", name: "נחש מים משובץ", scientificName: "Natrix tessellata", status: "לא ארסי", region: "ליד מקווי מים בצפון ובמרכז", habitat: "נחלים, בריכות ומאגרים", clue: "דגם משובץ וקשר חזק לבתי גידול מימיים.", image: "/snakes/dice-snake.jpg" },
+  { id: "large-whip-snake", name: "תלום־קשקשים מצוי", scientificName: "Malpolon insignitus", status: "תת־ארסי", region: "חלקים נרחבים בארץ", habitat: "שטחים פתוחים, חורש ובתה", clue: "נחש גדול ומהיר; אינו נחשב מסוכן בדרך כלל לאדם.", image: "/snakes/large-whip-snake.jpg" },
+  { id: "saw-scaled-viper", name: "אפעה מגוון", scientificName: "Echis coloratus", status: "ארסי", region: "בקעת הירדן, מדבר יהודה, הנגב והערבה", habitat: "אזורים סלעיים וצחיחים", clue: "דגם מדברי וקשקשים היוצרים קול חיכוך בעת איום.", image: "/snakes/saw-scaled-viper.jpg" },
+  { id: "desert-horned-viper", name: "עכן גדול", scientificName: "Cerastes cerastes", status: "ארסי", region: "חולות הנגב והערבה", habitat: "דיונות וחולות", clue: "מותאם לחול, גוף מוצק ולעיתים קרניים מעל העיניים.", image: "/snakes/desert-horned-viper.jpg" },
+  { id: "black-desert-cobra", name: "פתן שחור", scientificName: "Walterinnesia aegyptia", status: "ארסי", region: "הנגב, מדבר יהודה והערבה", habitat: "מדבר סלעי וערוצי נחלים", clue: "שחור מבריק ובעל ארס עצבי; לרוב נמנע ממפגש.", image: "/snakes/black-desert-cobra.jpg" },
+  { id: "engedi-burrowing-asp", name: "שרף עין גדי", scientificName: "Atractaspis engaddensis", status: "ארסי", region: "מדבר יהודה, בקעת ים המלח והערבה", habitat: "קרקע תחוחה ואזורים מדבריים", clue: "קטן, כהה וחופר; אין לנסות לאחוז בו בשום צורה.", image: "/snakes/engedi-burrowing-asp.jpg" }
+];
+
+const lessons: Lesson[] = [
+  { id: "safety", title: "פוגשים נחש", subtitle: "לומדים מה עושים — ומה לעולם לא עושים", icon: "🛡️", xp: 40, kind: "safety", available: true },
+  { id: "viper-vs-coin", title: "צפע או זעמן?", subtitle: "ההבדלים שחשוב להכיר בלי להתקרב", icon: "👀", xp: 60, kind: "identify", available: true },
+  { id: "album", title: "עשרת הראשונים", subtitle: "מכירים את נבחרת הנחשים של ישראל", icon: "🃏", xp: 40, kind: "album", available: true },
+  { id: "mediterranean", title: "נחשי הצפון והמרכז", subtitle: "בקרוב", icon: "🌿", xp: 80, kind: "identify", available: false },
+  { id: "desert", title: "נחשי המדבר", subtitle: "בקרוב", icon: "🏜️", xp: 80, kind: "identify", available: false },
+  { id: "final", title: "מבחן בלש נחשים", subtitle: "בקרוב", icon: "🏆", xp: 120, kind: "identify", available: false }
+];
+
+type Screen = "home" | "journey" | "lesson" | "album" | "safety";
+
+type SafetyQuestion = {
+  scene: string;
+  choices: string[];
+  correct: number;
+  explanation: string;
+};
+
+const safetyQuestions: SafetyQuestion[] = [
+  { scene: "ראית נחש ליד שביל הטיול. מה עושים קודם?", choices: ["מתקרבים לצלם", "עוצרים ומתרחקים לאט", "זורקים עליו אבן"], correct: 1, explanation: "נכון. שומרים מרחק, לא חוסמים לנחש את הדרך ולא מנסים לזהות מקרוב." },
+  { scene: "הנחש נכנס לחצר. למי פונים?", choices: ["למבוגר וללוכד מורשה", "לחבר שמכיר נחשים", "מנסים לגרש לבד"], correct: 0, explanation: "בדיוק. ילד קורא למבוגר; במקרה הצורך מזמינים לוכד נחשים מורשה." },
+  { scene: "נחש נראה מת ולא זז. מה נכון?", choices: ["נוגעים עם מקל", "מרימים בזנב", "לא נוגעים ומתרחקים"], correct: 2, explanation: "מצוין. גם נחש שנראה מת עלול להיות חי או להגיב. לא נוגעים בו." }
 ];
 
 function shuffled<T>(items: T[]): T[] {
@@ -29,120 +65,206 @@ function shuffled<T>(items: T[]): T[] {
 }
 
 export default function Home() {
-  const [screen, setScreen] = useState<"home" | "album" | "quiz" | "safety">("home");
+  const [screen, setScreen] = useState<Screen>("home");
+  const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
+  const [xp, setXp] = useState(0);
+  const [streak, setStreak] = useState(1);
+  const [completed, setCompleted] = useState<string[]>([]);
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [answered, setAnswered] = useState<string | null>(null);
-  const [best, setBest] = useState(0);
+  const [selected, setSelected] = useState<number | null>(null);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
-  const questions = useMemo(() => shuffled(snakes).slice(0, 10), [screen]);
-  const current = questions[questionIndex];
-  const answers = useMemo(() => current ? shuffled([current, ...shuffled(snakes.filter(s => s.id !== current.id)).slice(0, 3)]) : [], [current]);
 
   useEffect(() => {
-    const saved = Number(localStorage.getItem("snake-rangers-best") || 0);
-    setBest(saved);
+    setXp(Number(localStorage.getItem("nature-detectives-xp") || 0));
+    setStreak(Number(localStorage.getItem("nature-detectives-streak") || 1));
+    setCompleted(JSON.parse(localStorage.getItem("nature-detectives-completed") || "[]"));
   }, []);
 
-  function startQuiz() {
-    setQuestionIndex(0);
-    setScore(0);
-    setAnswered(null);
-    setScreen("quiz");
+  const rank = xp < 100 ? "חוקר מתחיל" : xp < 250 ? "בלש טבע" : "מומחה נחשים";
+  const progress = Math.min(100, (xp % 100));
+
+  const comparisonQuestions = useMemo(() => {
+    const viper = species[0];
+    const coin = species[1];
+    return shuffled([
+      { snake: viper, prompt: "איזה מין מתואר כאן?", choices: [viper.name, coin.name], correct: 0 },
+      { snake: coin, prompt: "איזה מין מתואר כאן?", choices: [viper.name, coin.name], correct: 1 },
+      { snake: viper, prompt: "למי בדרך כלל גוף עבה יותר?", choices: [viper.name, coin.name], correct: 0 },
+      { snake: coin, prompt: "למי בדרך כלל גוף דק וארוך יותר?", choices: [viper.name, coin.name], correct: 1 }
+    ]);
+  }, [activeLesson]);
+
+  function saveProgress(newXp: number, newCompleted: string[]) {
+    setXp(newXp);
+    setCompleted(newCompleted);
+    localStorage.setItem("nature-detectives-xp", String(newXp));
+    localStorage.setItem("nature-detectives-streak", String(streak));
+    localStorage.setItem("nature-detectives-completed", JSON.stringify(newCompleted));
   }
 
-  function answer(id: string) {
-    if (answered) return;
-    setAnswered(id);
-    if (id === current.id) setScore(s => s + 1);
-  }
-
-  function next() {
-    if (questionIndex === questions.length - 1) {
-      const finalScore = score + (answered === current.id ? 0 : 0);
-      const newBest = Math.max(best, finalScore);
-      setBest(newBest);
-      localStorage.setItem("snake-rangers-best", String(newBest));
-      setScreen("home");
+  function openLesson(lesson: Lesson) {
+    if (!lesson.available) return;
+    if (lesson.kind === "album") {
+      setScreen("album");
       return;
     }
-    setQuestionIndex(i => i + 1);
-    setAnswered(null);
+    if (lesson.kind === "safety") {
+      setScreen("safety");
+      setQuestionIndex(0);
+      setSelected(null);
+      return;
+    }
+    setActiveLesson(lesson);
+    setQuestionIndex(0);
+    setSelected(null);
+    setScreen("lesson");
   }
+
+  function finishLesson(lessonId: string, earnedXp: number) {
+    const alreadyDone = completed.includes(lessonId);
+    const newCompleted = alreadyDone ? completed : [...completed, lessonId];
+    const newXp = alreadyDone ? xp : xp + earnedXp;
+    saveProgress(newXp, newCompleted);
+    setScreen("journey");
+    setActiveLesson(null);
+    setQuestionIndex(0);
+    setSelected(null);
+  }
+
+  function resetProgress() {
+    localStorage.removeItem("nature-detectives-xp");
+    localStorage.removeItem("nature-detectives-completed");
+    setXp(0);
+    setCompleted([]);
+  }
+
+  const comparison = comparisonQuestions[questionIndex];
+  const safety = safetyQuestions[questionIndex];
 
   return (
     <main>
       <header className="topbar">
-        <button className="brand" onClick={() => setScreen("home")}>🐍 בלשי הנחשים</button>
-        <span>שיא אישי: {best}/10</span>
+        <button className="brand" onClick={() => setScreen("home")}><span>🦎</span> בלשי הטבע</button>
+        <div className="stats"><span title="רצף">🔥 {streak}</span><span title="נקודות ניסיון">⭐ {xp} XP</span></div>
       </header>
 
       {screen === "home" && (
         <section className="hero">
           <div className="hero-card">
-            <span className="eyebrow">משחק טבע ישראלי</span>
-            <h1>לומדים לזהות נחשים — בלי להתקרב אליהם</h1>
-            <p>עשרה מינים חשובים, משחקי זיהוי וכללי בטיחות ברורים לילדים בגילאי 6–12.</p>
+            <div className="mascot" aria-hidden="true">🦎</div>
+            <span className="eyebrow">המסע הראשון: נחשים בישראל</span>
+            <h1>מסתכלים כמו בלשים.<br />שומרים מרחק כמו מקצוענים.</h1>
+            <p>מסע משחקי לילדים בגילאי 6–12: לומדים לזהות, להשוות ולפעול נכון במפגש עם נחש.</p>
             <div className="actions">
-              <button className="primary" onClick={startQuiz}>התחילו במשחק</button>
+              <button className="primary big" onClick={() => setScreen("journey")}>יוצאים למסע ←</button>
               <button onClick={() => setScreen("album")}>אלבום הנחשים</button>
-              <button onClick={() => setScreen("safety")}>כללי בטיחות</button>
+            </div>
+            <div className="profile-strip">
+              <div><strong>{rank}</strong><span>הדרגה שלך</span></div>
+              <div className="rank-progress"><span style={{ width: `${progress}%` }} /></div>
+              <div><strong>{completed.length}/3</strong><span>משימות ראשונות</span></div>
             </div>
           </div>
-          <div className="notice"><strong>חשוב:</strong> האפליקציה מלמדת היכרות בלבד. לעולם לא נוגעים בנחש ולא מתקרבים כדי לזהות אותו.</div>
+          <div className="notice"><strong>כלל הזהב:</strong> מזהים רק ממרחק. לא נוגעים, לא מרימים ולא מתקרבים לצילום.</div>
+        </section>
+      )}
+
+      {screen === "journey" && (
+        <section className="content journey">
+          <div className="section-heading">
+            <div><span className="eyebrow">פרק 1</span><h1>הופכים לבלשי נחשים</h1><p>כל משימה קצרה מלמדת מיומנות אחת. מסיימים, צוברים XP ומתקדמים.</p></div>
+            <button className="ghost" onClick={() => setScreen("home")}>חזרה לבית</button>
+          </div>
+          <div className="lesson-path">
+            {lessons.map((lesson, index) => {
+              const done = completed.includes(lesson.id);
+              return (
+                <div className={`lesson-row ${index % 2 ? "offset" : ""}`} key={lesson.id}>
+                  <button className={`lesson-node ${done ? "done" : ""} ${!lesson.available ? "locked" : ""}`} onClick={() => openLesson(lesson)} disabled={!lesson.available}>
+                    <span className="lesson-icon">{done ? "✓" : lesson.icon}</span>
+                    <span><strong>{lesson.title}</strong><small>{lesson.subtitle}</small></span>
+                    <b>{lesson.available ? `+${lesson.xp} XP` : "🔒"}</b>
+                  </button>
+                  {index < lessons.length - 1 && <div className="path-line" />}
+                </div>
+              );
+            })}
+          </div>
+          {completed.length > 0 && <button className="text-button" onClick={resetProgress}>איפוס התקדמות במכשיר</button>}
+        </section>
+      )}
+
+      {screen === "safety" && safety && (
+        <section className="challenge">
+          <div className="challenge-top"><button className="close" onClick={() => setScreen("journey")}>×</button><div className="progress"><span style={{ width: `${((questionIndex + 1) / safetyQuestions.length) * 100}%` }} /></div><span>🛡️</span></div>
+          <div className="challenge-card">
+            <span className="question-label">משימת בטיחות {questionIndex + 1}/{safetyQuestions.length}</span>
+            <div className="scene-icon">🐍</div>
+            <h1>{safety.scene}</h1>
+            <div className="choice-list">
+              {safety.choices.map((choice, index) => (
+                <button key={choice} className={selected === null ? "" : index === safety.correct ? "correct" : index === selected ? "wrong" : "muted"} onClick={() => selected === null && setSelected(index)}>{choice}</button>
+              ))}
+            </div>
+            {selected !== null && (
+              <div className={`feedback ${selected === safety.correct ? "good" : "try"}`}>
+                <strong>{selected === safety.correct ? "מעולה!" : "כמעט. לומדים וממשיכים."}</strong>
+                <p>{safety.explanation}</p>
+                <button className="primary" onClick={() => {
+                  if (questionIndex === safetyQuestions.length - 1) finishLesson("safety", 40);
+                  else { setQuestionIndex(questionIndex + 1); setSelected(null); }
+                }}>{questionIndex === safetyQuestions.length - 1 ? "סיום המשימה" : "המשך"}</button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {screen === "lesson" && activeLesson && comparison && (
+        <section className="challenge">
+          <div className="challenge-top"><button className="close" onClick={() => setScreen("journey")}>×</button><div className="progress"><span style={{ width: `${((questionIndex + 1) / comparisonQuestions.length) * 100}%` }} /></div><span>👀</span></div>
+          <div className="challenge-card">
+            <span className="question-label">צפע מול זעמן מטבעות · {questionIndex + 1}/{comparisonQuestions.length}</span>
+            <div className="comparison-card">
+              <div className="mini-snake"><b>{comparison.snake.name}</b><span>{comparison.snake.status}</span><p>{comparison.snake.clue}</p></div>
+            </div>
+            <h1>{comparison.prompt}</h1>
+            <div className="choice-list two">
+              {comparison.choices.map((choice, index) => (
+                <button key={choice} className={selected === null ? "" : index === comparison.correct ? "correct" : index === selected ? "wrong" : "muted"} onClick={() => selected === null && setSelected(index)}>{choice}</button>
+              ))}
+            </div>
+            {selected !== null && (
+              <div className={`feedback ${selected === comparison.correct ? "good" : "try"}`}>
+                <strong>{selected === comparison.correct ? "חדות של בלש!" : "לא נורא — עכשיו יודעים יותר."}</strong>
+                <p>חשוב: אין לזהות נחש בשטח לפי סימן בודד, ותמיד שומרים מרחק.</p>
+                <button className="primary" onClick={() => {
+                  if (questionIndex === comparisonQuestions.length - 1) finishLesson(activeLesson.id, activeLesson.xp);
+                  else { setQuestionIndex(questionIndex + 1); setSelected(null); }
+                }}>{questionIndex === comparisonQuestions.length - 1 ? "קבלת XP" : "המשך"}</button>
+              </div>
+            )}
+          </div>
         </section>
       )}
 
       {screen === "album" && (
         <section className="content">
-          <h1>אלבום הנחשים</h1>
-          <p className="subtitle">התמונות יוכנסו רק לאחר אימות המין וקבלת רישיון שימוש.</p>
+          <div className="section-heading"><div><span className="eyebrow">האוסף שלך</span><h1>עשרת הנחשים הראשונים</h1><p>בגרסה הבאה יתווספו צילומים אמיתיים, מאומתים ובעלי רישיון שימוש.</p></div><button className="ghost" onClick={() => setScreen("home")}>חזרה לבית</button></div>
           <div className="grid">
-            {snakes.map(snake => (
+            {species.map((snake, index) => (
               <article className="snake-card" key={snake.id}>
                 <div className="image-wrap">
-                  {!imageErrors[snake.id] ? <img src={snake.image} alt={snake.name} onError={() => setImageErrors(e => ({...e, [snake.id]: true}))} /> : <div className="image-placeholder">צילום מאומת<br/>יוכנס כאן</div>}
+                  {!imageErrors[snake.id] ? <img src={snake.image} alt={snake.name} onError={() => setImageErrors(e => ({ ...e, [snake.id]: true }))} /> : <div className="image-placeholder"><span>#{index + 1}</span>צילום מאומת<br />יוכנס כאן</div>}
                 </div>
                 <div className="card-body">
-                  <div className="title-row"><h2>{snake.name}</h2><span className={`tag ${snake.status === "ארסי" ? "danger" : snake.status === "תת־ארסי" ? "warning" : "safe"}`}>{snake.status}</span></div>
+                  <div className="title-row"><div><h2>{snake.name}</h2><small>{snake.scientificName}</small></div><span className={`tag ${snake.status === "ארסי" ? "danger" : snake.status === "תת־ארסי" ? "warning" : "safe"}`}>{snake.status}</span></div>
+                  <p><strong>בית גידול:</strong> {snake.habitat}</p>
                   <p><strong>תפוצה:</strong> {snake.region}</p>
-                  <p>{snake.clue}</p>
+                  <p className="clue">🔎 {snake.clue}</p>
                 </div>
               </article>
             ))}
-          </div>
-        </section>
-      )}
-
-      {screen === "safety" && (
-        <section className="content narrow">
-          <h1>רואים נחש? עוצרים ומתרחקים</h1>
-          <div className="safety-list">
-            <div><b>1</b><span>לא נוגעים, לא מרימים ולא מנסים ללכוד.</span></div>
-            <div><b>2</b><span>מתרחקים לאט ושומרים מרחק גדול.</span></div>
-            <div><b>3</b><span>קוראים מיד למבוגר.</span></div>
-            <div><b>4</b><span>המבוגר מזמין לוכד נחשים מורשה במקרה הצורך.</span></div>
-          </div>
-          <button className="primary" onClick={() => setScreen("home")}>חזרה למסך הבית</button>
-        </section>
-      )}
-
-      {screen === "quiz" && current && (
-        <section className="quiz">
-          <div className="progress"><span style={{width: `${((questionIndex + 1) / questions.length) * 100}%`}} /></div>
-          <p>שאלה {questionIndex + 1} מתוך {questions.length} · ניקוד: {score}</p>
-          <div className="quiz-card">
-            <div className="image-wrap quiz-image">
-              {!imageErrors[current.id] ? <img src={current.image} alt="איזה נחש מופיע בתמונה?" onError={() => setImageErrors(e => ({...e, [current.id]: true}))} /> : <div className="image-placeholder">כאן תופיע תמונת נחש אמיתית ומאומתת</div>}
-            </div>
-            <h1>איזה נחש זה?</h1>
-            <div className="answer-grid">
-              {answers.map(option => {
-                const state = answered ? option.id === current.id ? "correct" : option.id === answered ? "wrong" : "muted" : "";
-                return <button key={option.id} className={state} onClick={() => answer(option.id)}>{option.name}</button>;
-              })}
-            </div>
-            {answered && <div className="feedback"><strong>{answered === current.id ? "מצוין!" : `התשובה היא ${current.name}.`}</strong><p>{current.clue}</p><button className="primary" onClick={next}>{questionIndex === questions.length - 1 ? "סיום" : "לשאלה הבאה"}</button></div>}
           </div>
         </section>
       )}
