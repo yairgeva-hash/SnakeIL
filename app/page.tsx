@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { lessons, safetyQuestions, species, type Lesson, type Species } from "./data";
 
-type Screen = "home" | "journey" | "lesson" | "album" | "safety" | "journal";
+type Screen = "intro" | "home" | "journey" | "lesson" | "album" | "safety" | "journal";
 type IdentifyQuestion = {
   type: "clue" | "compare" | "reason";
   snake: Species;
@@ -29,7 +29,7 @@ function shuffled<T>(items: T[]): T[] {
 }
 
 export default function Home() {
-  const [screen, setScreen] = useState<Screen>("home");
+  const [screen, setScreen] = useState<Screen>("intro");
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [xp, setXp] = useState(0);
   const [streak, setStreak] = useState(1);
@@ -138,21 +138,45 @@ export default function Home() {
   return (
     <main className="app-shell">
       <div className="paper-noise" aria-hidden="true" />
-      <header className="topbar">
-        <button className="brand" onClick={() => setScreen("home")}>
-          <span className="brand-mark">🌿</span>
-          <span><strong>בלשי הטבע</strong><small>נחשים בישראל</small></span>
-        </button>
-        <div className="stats" aria-label="מצב שחקן">
-          <span className="heart-stat" title="לבבות">{Array.from({ length: MAX_HEARTS }).map((_, index) => <i key={index} className={index < hearts ? "full" : "empty"}>♥</i>)}</span>
-          <span title="נקודות ניסיון">⭐ {xp}</span>
-          <span title="רצף">🔥 {streak}</span>
-        </div>
-      </header>
+      {screen !== "intro" && (
+        <header className="topbar">
+          <button className="brand" onClick={() => setScreen("home")}>
+            <span className="brand-mark">🌿</span>
+            <span><strong>בלשי הטבע</strong><small>נחשים בישראל</small></span>
+          </button>
+          <div className="stats" aria-label="מצב שחקן">
+            <span className="heart-stat" title="לבבות">{Array.from({ length: MAX_HEARTS }).map((_, index) => <i key={index} className={index < hearts ? "full" : "empty"}>♥</i>)}</span>
+            <span title="נקודות ניסיון">⭐ {xp}</span>
+            <span title="רצף">🔥 {streak}</span>
+          </div>
+        </header>
+      )}
 
       <div className="reward-layer" aria-live="polite">
         {rewards.map((reward) => <div key={reward.id} className="floating-reward"><span>🍃</span>{reward.label}</div>)}
       </div>
+
+      {screen === "intro" && (
+        <section className="opening-screen" aria-labelledby="opening-title">
+          <div className="opening-sun" aria-hidden="true" />
+          <div className="opening-landscape" aria-hidden="true">
+            <span className="hill hill-one" />
+            <span className="hill hill-two" />
+            <span className="reed reed-one">🌿</span>
+            <span className="reed reed-two">🌾</span>
+            <span className="snake-trail">〰</span>
+          </div>
+          <div className="opening-card">
+            <span className="opening-kicker">מחברת השדה שלך נפתחה</span>
+            <div className="opening-emblem" aria-hidden="true"><span>🔎</span><i>🐍</i></div>
+            <h1 id="opening-title">בלשי הטבע</h1>
+            <h2>לומדים לזהות את נחשי ישראל</h2>
+            <p>מתבוננים. מזהים. שומרים מרחק.</p>
+            <button className="primary opening-button" onClick={() => setScreen("home")}>צאו למשלחת הראשונה <span>←</span></button>
+            <small>משחק זיהוי קצר, בטוח ומבוסס תמונות אמיתיות</small>
+          </div>
+        </section>
+      )}
 
       {screen === "home" && (
         <section className="hero notebook-page">

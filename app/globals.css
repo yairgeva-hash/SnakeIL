@@ -4,3 +4,108 @@
 @media(max-width:800px){.hero-grid{grid-template-columns:1fr}.hero-badge{min-height:180px}.profile-strip{grid-template-columns:1fr}.quick-grid,.journal-grid{grid-template-columns:1fr}.lesson-row.offset{transform:none}.choice-list.two{grid-template-columns:1fr}.notebook-page:before{right:18px}.section-heading{display:block}.section-heading .ghost{margin-top:14px}.topbar{padding:11px 12px}.stats>span{padding:8px 9px;font-size:.82rem}.brand small{display:none}.hero h1{font-size:2.55rem}}
 @media(max-width:520px){.notebook-page{width:min(100% - 14px,1120px);margin-top:10px;padding:24px 18px;border-radius:24px}.stats>span:nth-child(3){display:none}.heart-stat i{font-size:.76rem}.lesson-node{grid-template-columns:55px 1fr;padding:14px}.lesson-node>b{grid-column:2}.lesson-icon{width:48px;height:48px}.journal-entry{grid-template-columns:44px 1fr}.journal-entry>b{display:none}.actions{flex-direction:column}.actions button{width:100%}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Milestone 2.1 — full notebook canvas and cinematic opening */
+body{
+  background-color:#f8f5ea;
+  background-image:
+    linear-gradient(90deg,transparent 0 54px,rgba(194,75,70,.16) 54px 56px,transparent 56px),
+    repeating-linear-gradient(180deg,transparent 0 31px,rgba(91,146,174,.14) 31px 32px),
+    radial-gradient(circle at 14% 8%,rgba(255,255,255,.82),transparent 26%);
+  background-attachment:fixed;
+}
+.paper-noise{opacity:.11}
+.topbar{background:rgba(255,253,246,.82)}
+.notebook-page{background:rgba(255,253,246,.94)}
+
+.opening-screen{
+  position:relative;
+  width:min(1120px,calc(100% - 28px));
+  min-height:clamp(610px,78vh,820px);
+  margin:24px auto 52px;
+  border-radius:34px;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  isolation:isolate;
+  border:1px solid rgba(48,70,56,.16);
+  box-shadow:0 28px 80px rgba(32,79,58,.18);
+  background:
+    linear-gradient(180deg,rgba(219,238,233,.88) 0%,rgba(245,238,209,.86) 56%,rgba(207,222,188,.95) 100%);
+}
+.opening-screen:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:
+    repeating-linear-gradient(180deg,transparent 0 31px,rgba(75,130,158,.08) 31px 32px),
+    linear-gradient(90deg,transparent 0 72px,rgba(194,75,70,.12) 72px 74px,transparent 74px);
+}
+.opening-screen:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(33,69,49,.13);
+}
+.opening-sun{
+  position:absolute;
+  top:8%;
+  left:10%;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,247,190,.95) 0 34%,rgba(255,238,159,.48) 35% 58%,transparent 59%);
+  animation:sunPulse 5s ease-in-out infinite;
+}
+.opening-landscape{position:absolute;inset:0;overflow:hidden;z-index:0}
+.hill{position:absolute;bottom:-18%;width:78%;height:48%;border-radius:50% 50% 0 0}
+.hill-one{left:-20%;background:rgba(80,125,84,.43);transform:rotate(7deg)}
+.hill-two{right:-24%;bottom:-23%;background:rgba(46,91,63,.55);transform:rotate(-5deg)}
+.reed{position:absolute;bottom:12%;font-size:5rem;filter:saturate(.7);animation:reedSway 3.8s ease-in-out infinite;transform-origin:bottom center}
+.reed-one{right:7%}.reed-two{left:8%;animation-delay:-1.2s}
+.snake-trail{position:absolute;bottom:17%;left:50%;font-size:8rem;color:rgba(28,67,47,.38);transform:translateX(-50%) rotate(-7deg);letter-spacing:-.35em;animation:trailMove 5s ease-in-out infinite}
+.opening-card{
+  position:relative;
+  z-index:2;
+  width:min(610px,calc(100% - 34px));
+  text-align:center;
+  padding:clamp(34px,6vw,66px);
+  border-radius:32px;
+  background:rgba(255,253,246,.9);
+  border:1px solid rgba(42,77,57,.16);
+  box-shadow:0 22px 60px rgba(31,72,51,.2);
+  backdrop-filter:blur(8px);
+  animation:openingRise .7s cubic-bezier(.2,.8,.2,1) both;
+}
+.opening-card:before{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border:1px dashed rgba(32,79,58,.23);
+  border-radius:24px;
+  pointer-events:none;
+}
+.opening-kicker{display:inline-block;color:var(--forest-2);font-size:.84rem;font-weight:900;letter-spacing:.03em;margin-bottom:16px}
+.opening-emblem{position:relative;width:104px;height:104px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#f6edc8,#dcead6);border:1px solid rgba(32,79,58,.22);box-shadow:inset 0 0 0 8px rgba(255,255,255,.42);animation:emblemFloat 3.5s ease-in-out infinite}
+.opening-emblem span{font-size:3.6rem;transform:rotate(-12deg)}
+.opening-emblem i{position:absolute;bottom:7px;right:11px;font-style:normal;font-size:1.8rem;animation:snakePeek 2.8s ease-in-out infinite}
+.opening-card h1{font-size:clamp(3rem,8vw,5.8rem);line-height:.96;margin:7px 0;color:var(--forest);letter-spacing:-.055em}
+.opening-card h2{font-size:clamp(1.15rem,3vw,1.55rem);margin:15px 0 8px;font-weight:900}
+.opening-card p{font-size:clamp(1rem,2.5vw,1.22rem);color:var(--muted);margin:0 0 27px}
+.opening-button{font-size:1.08rem!important;padding:16px 24px!important;min-width:min(100%,310px);border:0!important;border-radius:18px!important;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.opening-button:hover{transform:translateY(-3px);box-shadow:0 15px 30px rgba(32,79,58,.3)}
+.opening-button:active{transform:scale(.97)}
+.opening-button span{display:inline-block;margin-right:8px;animation:arrowNudge 1.4s ease-in-out infinite}
+.opening-card small{display:block;margin-top:15px;color:var(--muted);font-size:.78rem}
+@keyframes openingRise{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes emblemFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+@keyframes snakePeek{0%,100%{transform:translateY(3px) rotate(-7deg)}50%{transform:translateY(-4px) rotate(7deg)}}
+@keyframes sunPulse{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.07);opacity:1}}
+@keyframes reedSway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(4deg)}}
+@keyframes trailMove{0%,100%{transform:translateX(-52%) rotate(-7deg)}50%{transform:translateX(-47%) rotate(-3deg)}}
+@keyframes arrowNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(-5px)}}
+@media(max-width:800px){.opening-screen{min-height:680px}.opening-sun{width:130px;height:130px;left:2%;top:5%}.reed{font-size:3.7rem}.opening-card{padding:40px 25px}.opening-card h1{font-size:3.65rem}}
+@media(max-width:520px){body{background-image:linear-gradient(90deg,transparent 0 27px,rgba(194,75,70,.13) 27px 29px,transparent 29px),repeating-linear-gradient(180deg,transparent 0 31px,rgba(91,146,174,.12) 31px 32px)}.opening-screen{width:calc(100% - 14px);margin-top:10px;min-height:calc(100vh - 86px);border-radius:24px}.opening-card{width:calc(100% - 22px);border-radius:25px}.opening-emblem{width:88px;height:88px}.opening-emblem span{font-size:3rem}.opening-card h1{font-size:3.25rem}.opening-card h2{font-size:1.1rem}.snake-trail{font-size:5.5rem}}
