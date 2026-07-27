@@ -5,7 +5,7 @@ import { missions, safetyQuestions, species, viperVsCoinCases } from "./data";
 import { AlbumScreen, JournalScreen, SpeciesReveal } from "./components/CollectionScreens";
 import { HomeScreen } from "./components/HomeScreen";
 import { IntroScreen } from "./components/IntroScreen";
-import { InvestigationMission } from "./components/InvestigationMission";
+import { CaseMission } from "./components/CaseMission";
 import { JourneyScreen } from "./components/JourneyScreen";
 import { SafetyMission } from "./components/SafetyMission";
 import { RewardLayer } from "./components/GameUI";
@@ -121,7 +121,7 @@ export default function Home() {
 
       {screen === "safety" && safety && <SafetyMission question={safety} index={questionIndex} total={safetyQuestions.length} selected={selected} feedbackLine={feedbackLine} onClose={() => setScreen("journey")} onChoose={(index) => chooseAnswer(index, safety.correct)} onNext={() => { if (questionIndex === safetyQuestions.length - 1) finishMission("safety", 40); else { setQuestionIndex(questionIndex + 1); setSelected(null); } }} />}
 
-      {screen === "lesson" && activeMission && currentCase && <InvestigationMission current={currentCase} index={questionIndex} total={investigationCases.length} phase={detectivePhase} selected={selected} observationSelected={observationSelected} confidence={confidence} feedbackLine={feedbackLine} onClose={() => setScreen("journey")} onObservation={setObservationSelected} onPhase={setDetectivePhase} onChoose={(index) => chooseAnswer(index, currentCase.correct)} onConfidence={setConfidence} onNext={() => { if (questionIndex === investigationCases.length - 1) finishMission(activeMission.id, activeMission.xp); else { setQuestionIndex(questionIndex + 1); resetQuestionState(); } }} />}
+      {screen === "lesson" && activeMission && <CaseMission species={species} onClose={() => setScreen("journey")} onMicroReward={launchReward} onFinish={() => finishMission(activeMission.id, activeMission.xp)} />}
 
       {screen === "journal" && <JournalScreen species={species} discovered={discovered} completed={completed} rank={rank} rankIcon={rankIcon} rankProgress={rankProgress} hearts={hearts} onHome={() => setScreen("home")} />}
       {screen === "album" && <AlbumScreen species={species} discovered={discovered} imageErrors={imageErrors} onImageError={(id) => setImageErrors((value) => ({ ...value, [id]: true }))} onHome={() => setScreen("home")} />}
