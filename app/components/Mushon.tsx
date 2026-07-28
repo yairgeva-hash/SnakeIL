@@ -1,16 +1,27 @@
+import Image from "next/image";
+
 export function Mushon({ message, mood = "curious", compact = false }: {
   message: string;
   mood?: "curious" | "happy" | "thinking";
   compact?: boolean;
 }) {
-  const expression = mood === "happy" ? "◡" : mood === "thinking" ? "﹏" : "⌣";
-  return <aside className={`mushon-guide ${compact ? "compact" : ""}`} aria-label="מושון חוקר הטבע">
-    <div className="mushon-avatar" aria-hidden="true">
-      <span className="mushon-hat">⌒</span>
-      <span className="mushon-face"><i>◉</i><i>◉</i><b>{expression}</b></span>
-      <span className="mushon-glasses" />
-      <span className="mushon-shirt">▾</span>
-    </div>
-    <div className="mushon-bubble"><small>מושון אומר</small><p>{message}</p></div>
-  </aside>;
+  const moodLabel = mood === "happy" ? "שמח" : mood === "thinking" ? "חושב" : "סקרן";
+
+  return (
+    <aside className={`mushon-guide mushon-${mood} ${compact ? "compact" : ""}`} aria-label={`מושון חוקר הטבע, ${moodLabel}`}>
+      <div className="mushon-portrait" aria-hidden="true">
+        <Image
+          src="/images/characters/mushon.png"
+          alt=""
+          fill
+          sizes={compact ? "110px" : "160px"}
+          priority={!compact}
+        />
+      </div>
+      <div className="mushon-bubble">
+        <small>מושון אומר</small>
+        <p>{message}</p>
+      </div>
+    </aside>
+  );
 }
