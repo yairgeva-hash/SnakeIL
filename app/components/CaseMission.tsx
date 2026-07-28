@@ -47,7 +47,7 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
       {stage !== "hook" && stage !== "solved" && <div className="case-evidence-meter" aria-label={`${evidence.length} מתוך 3 ראיות נאספו`}><strong>הראיות בתיק</strong>{["דוגמת גב", "מבנה גוף", "לא מסתמכים על צבע"].map((item) => <span key={item} className={evidence.includes(item) ? "found" : ""}>{evidence.includes(item) ? "✓" : "○"}<small>{item}</small></span>)}</div>}
 
       {stage === "hook" && <div className="case-hook">
-        <Mushon mood="curious" message="מישהו התבלבל בין שני נחשים דומים. אל תמהר לנחש — נאסוף שלוש ראיות ונפתור את התיק יחד." />
+        <Mushon size="large" mood="curious" message="מישהו התבלבל בין שני נחשים דומים. אל תמהר לנחש — נאסוף שלוש ראיות ונפתור את התיק יחד." />
         <div className="case-folder">📁</div>
         <span className="case-kicker">תעלומה חדשה</span>
         <h1>הצפע והמתחזה</h1>
@@ -55,7 +55,7 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
         <button className="primary case-primary" onClick={() => { playGameSound("open"); onMicroReward("התיק נפתח!"); move("notice"); }}>פתח את התיק</button>
       </div>}
 
-      {stage === "notice" && <>
+      {stage === "notice" && <><Mushon size="small" mood="curious" message="אין צורך לדעת את השם עדיין. ספר לי רק מה ראית קודם." />
         <span className="question-label">ניצחון ראשון · אין כאן תשובה לא נכונה</span>
         <div className="single-photo"><img src={viper.media[1].src} alt={viper.media[1].alt} /></div>
         <h1>מה תפס לך את העין קודם?</h1>
@@ -63,7 +63,7 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
         {choice.picked !== null && <div className="micro-success"><strong>✨ יפה! בלש טוב מתחיל ממה שהוא רואה.</strong><p>עכשיו נבדוק אילו רמזים באמת עוזרים להבדיל בין המינים.</p><button className="primary" onClick={() => move("pattern")}>לרמז הראשון</button></div>}
       </>}
 
-      {stage === "pattern" && <>
+      {stage === "pattern" && <><Mushon size="small" mood="thinking" message="הסתכל על הכתמים: האם הם מתחברים לפס מתפתל, או נשארים נפרדים?" />
         <span className="question-label">רמז 1 מתוך 3</span>
         <div className="compare-photos">
           <figure><img src={viper.media[3].src} alt={viper.media[3].alt} /><figcaption>תמונה א׳</figcaption></figure>
@@ -74,7 +74,7 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
         {choice.picked !== null && <div className={`micro-success ${choice.success ? "" : "gentle"}`}><strong>{choice.success ? "🔎 מצאת את הרמז החשוב!" : "כמעט — הסתכל שוב על החיבור בין הכתמים."}</strong><p>אצל הצפע הדוגמה נראית לעיתים כמו פס כהה ומתפתל. אצל זעמן המטבעות הכתמים נפרדים יותר.</p>{choice.success && <button className="primary" onClick={() => move("body")}>אסוף עוד ראיה</button>}</div>}
       </>}
 
-      {stage === "body" && <>
+      {stage === "body" && <><Mushon size="small" mood="thinking" message="עכשיו נשווה את מבנה הגוף. זה רמז חשוב, אבל לא מחליטים לפיו לבד." />
         <span className="question-label">רמז 2 מתוך 3</span>
         <div className="compare-photos">
           <figure><img src={viper.media[4].src} alt={viper.media[4].alt} /><figcaption>צפע מצוי</figcaption></figure>
@@ -85,14 +85,14 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
         {choice.picked !== null && <div className={`micro-success ${choice.success ? "" : "gentle"}`}><strong>{choice.success ? "🌿 עוד ראיה נאספה!" : "כיוון טוב — השווה את רוחב הגוף."}</strong><p>הצפע נראה בדרך כלל עבה ומוצק יותר; הזעמן לרוב ארוך ודק יותר. זה רמז, לא כלל יחיד.</p>{choice.success && <button className="primary" onClick={() => move("compare")}>לגילוי המפתיע</button>}</div>}
       </>}
 
-      {stage === "compare" && <>
+      {stage === "compare" && <><Mushon size="small" mood="alert" message="הנה המלכודת: צבע משתנה ולכן הוא עלול להטעות אותנו." />
         <span className="question-label">הטוויסט של התיק</span>
         <div className="twist-card"><span>🎭</span><h1>הצבע יכול להטעות</h1><p>שני המינים יכולים להופיע בגוונים שונים. בלש טבע לא מחליט לפי צבע בלבד — הוא מחבר כמה ראיות.</p></div>
         <div className="evidence-strip"><b>בתיק שלך:</b><span>{evidenceText}</span></div>
         <button className="primary case-primary" onClick={() => { addEvidence("לא מסתמכים על צבע"); move("final"); }}>אני מוכן לפתור</button>
       </>}
 
-      {stage === "final" && <>
+      {stage === "final" && <><Mushon size="medium" mood="curious" message="זה הרגע שלך. בדוק את כל הראיות שאספנו ורק אז קבע מסקנה." />
         <span className="question-label">חקירת הסיום</span>
         <div className="single-photo final-photo"><img src={coin.media[4].src} alt="נחש בתמונת שטח" /></div>
         <h1>מה המסקנה שלך?</h1>
@@ -102,7 +102,7 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
       </>}
 
       {stage === "solved" && <div className="case-solved">
-        <Mushon mood="happy" message="עשית בדיוק מה שחוקר טבע עושה: התבוננת, השווית ורק אז החלטת." />
+        <Mushon size="large" mood="celebrate" message="עשית בדיוק מה שחוקר טבע עושה: התבוננת, השווית ורק אז החלטת." />
         <div className="solved-stamp">התיק נסגר</div>
         <h1>עבודה מצוינת, בלש טבע!</h1>
         <p>לפני כמה דקות אולי היית מנחש. עכשיו אתה כבר יודע לחפש כמה רמזים.</p>
