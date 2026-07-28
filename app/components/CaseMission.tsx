@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import type { Species } from "../types/game";
 import { ChallengeHeader } from "./GameUI";
+import { Mushon } from "./Mushon";
+import { playGameSound } from "../lib/sound";
 
 type Stage = "hook" | "notice" | "pattern" | "body" | "compare" | "final" | "solved";
 type ChoiceState = { picked: number | null; success: boolean };
@@ -26,12 +28,14 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
   const addEvidence = (label: string) => {
     setEvidence((items) => items.includes(label) ? items : [...items, label]);
     onMicroReward(`ראיה נוספה: ${label}`);
+    playGameSound("clue");
   };
-  const move = (next: Stage) => { setChoice({ picked: null, success: false }); setStage(next); };
+  const move = (next: Stage) => { playGameSound("tap"); setChoice({ picked: null, success: false }); setStage(next); };
   const choose = (index: number, correct: number, evidenceLabel?: string) => {
     const success = index === correct;
     setChoice({ picked: index, success });
     if (success && evidenceLabel) addEvidence(evidenceLabel);
+    playGameSound(success ? "success" : "tap");
   };
 
   const evidenceText = useMemo(() => evidence.length ? evidence.join(" · ") : "התיק עדיין ריק", [evidence]);
@@ -40,13 +44,15 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
     <ChallengeHeader onClose={onClose} progress={progress} icon="🗂️" />
     <div className="challenge-card case-card">
       <div className="case-topline"><span>תיק חקירה 001</span><b>{stage === "solved" ? "נפתר ✓" : "פתוח"}</b></div>
+      {stage !== "hook" && stage !== "solved" && <div className="case-evidence-meter" aria-label={`${evidence.length} מתוך 3 ראיות נאספו`}><strong>הראיות בתיק</strong>{["דוגמת גב", "מבנה גוף", "לא מסתמכים על צבע"].map((item) => <span key={item} className={evidence.includes(item) ? "found" : ""}>{evidence.includes(item) ? "✓" : "○"}<small>{item}</small></span>)}</div>}
 
       {stage === "hook" && <div className="case-hook">
+        <Mushon mood="curious" message="מישהו התבלבל בין שני נחשים דומים. אל תמהר לנחש — נאסוף שלוש ראיות ונפתור את התיק יחד." />
         <div className="case-folder">📁</div>
         <span className="case-kicker">תעלומה חדשה</span>
         <h1>הצפע והמתחזה</h1>
         <p>בשביל נראו שני נחשים דומים. אחד ארסי, והשני רק נראה דומה. האם תצליח לגלות מי הוא מי?</p>
-        <button className="primary case-primary" onClick={() => { onMicroReward("התיק נפתח!"); move("notice"); }}>פתח את התיק</button>
+        <button className="primary case-primary" onClick={() => { playGameSound("open"); onMicroReward("התיק נפתח!"); move("notice"); }}>פתח את התיק</button>
       </div>}
 
       {stage === "notice" && <>
@@ -92,10 +98,11 @@ export function CaseMission({ species, onClose, onFinish, onMicroReward }: {
         <h1>מה המסקנה שלך?</h1>
         <p className="case-prompt">בדוק דוגמת גב ומבנה גוף לפני שאתה מחליט.</p>
         <div className="choice-list two"><button className={choice.picked === 0 ? "wrong" : ""} onClick={() => choose(0, 1)}>צפע מצוי</button><button className={choice.picked === 1 ? (choice.success ? "correct" : "wrong") : ""} onClick={() => choose(1, 1)}>זעמן מטבעות</button></div>
-        {choice.picked !== null && <div className={`micro-success ${choice.success ? "" : "gentle"}`}><strong>{choice.success ? "🎉 פתרת את התעלומה!" : "התיק נשאר פתוח — חסרה עוד הסתכלות אחת."}</strong><p>{choice.success ? "הכתמים נפרדים יותר והגוף מוארך יחסית. אספת ראיות לפני שהחלטת." : "חזור לדוגמת הגב: האם היא פס מתפתל, או כתמים נפרדים?"}</p>{choice.success && <button className="primary" onClick={() => { onMicroReward("התיק נסגר!"); move("solved"); }}>סגור את התיק</button>}</div>}
+        {choice.picked !== null && <div className={`micro-success ${choice.success ? "" : "gentle"}`}><strong>{choice.success ? "🎉 פתרת את התעלומה!" : "התיק נשאר פתוח — חסרה עוד הסתכלות אחת."}</strong><p>{choice.success ? "הכתמים נפרדים יותר והגוף מוארך יחסית. אספת ראיות לפני שהחלטת." : "חזור לדוגמת הגב: האם היא פס מתפתל, או כתמים נפרדים?"}</p>{choice.success && <button className="primary" onClick={() => { playGameSound("complete"); onMicroReward("התיק נסגר!"); move("solved"); }}>סגור את התיק</button>}</div>}
       </>}
 
       {stage === "solved" && <div className="case-solved">
+        <Mushon mood="happy" message="עשית בדיוק מה שחוקר טבע עושה: התבוננת, השווית ורק אז החלטת." />
         <div className="solved-stamp">התיק נסגר</div>
         <h1>עבודה מצוינת, בלש טבע!</h1>
         <p>לפני כמה דקות אולי היית מנחש. עכשיו אתה כבר יודע לחפש כמה רמזים.</p>

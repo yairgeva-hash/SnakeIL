@@ -10,6 +10,8 @@ import { JourneyScreen } from "./components/JourneyScreen";
 import { SafetyMission } from "./components/SafetyMission";
 import { RewardLayer } from "./components/GameUI";
 import { TopBar } from "./components/TopBar";
+import { AchievementModal } from "./components/AchievementModal";
+import { playGameSound } from "./lib/sound";
 import { hydrateInvestigation, MAX_HEARTS, shuffled, SUCCESS_LINES } from "./lib/game";
 import type { Confidence, DetectivePhase, Mission, Screen, Species } from "./types/game";
 
@@ -33,6 +35,7 @@ export default function Home() {
   const [detectivePhase, setDetectivePhase] = useState<DetectivePhase>("observe");
   const [observationSelected, setObservationSelected] = useState<number | null>(null);
   const [confidence, setConfidence] = useState<Confidence | null>(null);
+  const [achievementOpen, setAchievementOpen] = useState(false);
 
   useEffect(() => {
     setXp(Number(localStorage.getItem("nature-detectives-xp") || 0));
@@ -101,7 +104,10 @@ export default function Home() {
     persist(alreadyDone ? xp : xp + earnedXp + bonus, nextCompleted, Math.min(MAX_HEARTS, hearts + 1), nextDiscovered);
     launchReward(`+${alreadyDone ? bonus : earnedXp + bonus} XP`);
     setScreen("journey"); setActiveMission(null); setQuestionIndex(0); resetQuestionState();
-    if (isNewDiscovery && rewardSpecies) window.setTimeout(() => setPendingReveal(rewardSpecies), 350);
+    if (!alreadyDone && missionId === "viper-vs-coin") {
+      localStorage.setItem("nature-detectives-achievement-sharp-eye", "1");
+      window.setTimeout(() => { playGameSound("achievement"); setAchievementOpen(true); }, 550);
+    } else if (isNewDiscovery && rewardSpecies) window.setTimeout(() => setPendingReveal(rewardSpecies), 350);
   }
 
   function resetProgress() {
@@ -127,6 +133,7 @@ export default function Home() {
         {screen === "journal" && <JournalScreen species={species} discovered={discovered} completed={completed} rank={rank} rankIcon={rankIcon} rankProgress={rankProgress} hearts={hearts} onHome={() => setScreen("home")} />}
         {screen === "album" && <AlbumScreen species={species} discovered={discovered} imageErrors={imageErrors} onImageError={(id) => setImageErrors((value) => ({ ...value, [id]: true }))} onHome={() => setScreen("home")} />}
       </div>
+      {achievementOpen && <AchievementModal onClose={() => { setAchievementOpen(false); if (pendingReveal) return; const rewardSpecies = species.find((item) => item.id === "black-whipsnake"); if (rewardSpecies && !discovered.includes(rewardSpecies.id)) setPendingReveal(rewardSpecies); }} />}
       {pendingReveal && <SpeciesReveal item={pendingReveal} pageNumber={discovered.indexOf(pendingReveal.id) + 1} onJournal={() => { setPendingReveal(null); setScreen("journal"); }} onClose={() => setPendingReveal(null)} />}
     </main>
   );

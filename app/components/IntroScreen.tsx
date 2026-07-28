@@ -1,3 +1,5 @@
+import { Mushon } from "./Mushon";
+
 export function IntroScreen({ onStart }: { onStart: () => void }) {
   return (
     <section
@@ -16,7 +18,7 @@ export function IntroScreen({ onStart }: { onStart: () => void }) {
 
       <div className="opening-card opening-hero-card">
         <div className="opening-case-label">מחברת השדה האישית שלך</div>
-        <div className="opening-emblem" aria-hidden="true"><span>🔎</span><i>🐍</i></div>
+        <Mushon compact mood="happy" message="שלום, אני מושון! יחד נפתח תיקים, נאסוף רמזים ונגלה מי באמת מסתתר בתמונה." />
         <p className="opening-kicker">משחק חקר וזיהוי לילדים בני 6–12</p>
         <h1 id="opening-title">בלשי הטבע</h1>
         <h2>פותחים תיק. אוספים רמזים. מגלים את האמת.</h2>

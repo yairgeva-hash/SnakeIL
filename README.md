@@ -1,4 +1,4 @@
-# בלשי הטבע — v1.1 Vertical Slice
+# בלשי הטבע — v1.2 Vertical Slice
 
 גרסת MVP ממוקדת שמיישמת תיק חקירה אחד מלא: **הצפע והמתחזה**.
 
@@ -23,7 +23,15 @@ npm run build
 ```
 
 
-## v1.1
+## v1.2
 - Cinematic explanatory opening screen
 - Unified field-notebook visual language
 - Lightweight page-turn transitions between screens
+
+
+## v1.2
+- מושון, חוקר הטבע והמנטור של המשחק
+- צלילי Web Audio ללא קבצים חיצוניים
+- מד ראיות חי בתיק החקירה
+- הישג ראשון: עין חדה
+- אנימציות ומשוב משחקי משופרים
