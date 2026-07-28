@@ -1,15 +1,43 @@
 export function IntroScreen({ onStart }: { onStart: () => void }) {
   return (
-    <section className="opening-screen opening-clickable" aria-labelledby="opening-title" role="button" tabIndex={0} onClick={onStart} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") onStart(); }}>
-      <div className="opening-sun" aria-hidden="true" />
-      <div className="opening-landscape" aria-hidden="true"><span className="hill hill-one" /><span className="hill hill-two" /><span className="reed reed-one">🌿</span><span className="reed reed-two">🌾</span><span className="snake-trail">〰</span></div>
-      <div className="opening-card">
-        <span className="opening-kicker">משחק חקר וזיהוי לילדים בני 6–12</span>
+    <section
+      className="opening-screen opening-clickable field-notebook-cover"
+      aria-labelledby="opening-title"
+      role="button"
+      tabIndex={0}
+      onClick={onStart}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") onStart();
+      }}
+    >
+      <div className="cover-corner cover-corner-one" aria-hidden="true">🌿</div>
+      <div className="cover-corner cover-corner-two" aria-hidden="true">〰</div>
+      <div className="notebook-rings" aria-hidden="true">{Array.from({ length: 8 }, (_, index) => <i key={index} />)}</div>
+
+      <div className="opening-card opening-hero-card">
+        <div className="opening-case-label">מחברת השדה האישית שלך</div>
         <div className="opening-emblem" aria-hidden="true"><span>🔎</span><i>🐍</i></div>
-        <h1 id="opening-title">בלשי הטבע</h1><h2>לומדים לחשוב כמו גששי טבע</h2>
-        <p className="opening-summary">מתבוננים בתמונות אמיתיות, מחפשים רמזים, מזהים את נחשי ישראל ולומדים כיצד לשמור מרחק בבטחה.</p>
-        <div className="opening-facts" aria-label="מאפייני המשחק"><span>📷 תמונות אמיתיות</span><span>🔎 משימות חקירה</span><span>🛡️ למידה בטוחה</span></div>
-        <button className="primary opening-button" type="button">לחצו כדי להתחיל <span>←</span></button><small className="opening-dismiss">אפשר ללחוץ בכל מקום במסך</small>
+        <p className="opening-kicker">משחק חקר וזיהוי לילדים בני 6–12</p>
+        <h1 id="opening-title">בלשי הטבע</h1>
+        <h2>פותחים תיק. אוספים רמזים. מגלים את האמת.</h2>
+
+        <p className="opening-summary">
+          לא כל נחש שנראה מפחיד הוא מסוכן — ובלש טבע טוב אף פעם לא מסתפק בניחוש.
+          במשחק תתבוננו בתמונות אמיתיות, תחפשו סימנים חשובים ותפתרו תעלומות על בעלי החיים של ישראל.
+        </p>
+
+        <div className="opening-mission-grid" aria-label="מה עושים במשחק">
+          <span><b>🔎</b><strong>אוספים ראיות</strong><small>מגלים אילו פרטים באמת חשובים</small></span>
+          <span><b>🧠</b><strong>חושבים כמו חוקרים</strong><small>משווים, בודקים ומסיקים מסקנות</small></span>
+          <span><b>📖</b><strong>פותחים אנציקלופדיה</strong><small>כל תיק מוסיף ידע חדש למחברת</small></span>
+        </div>
+
+        <blockquote>חוקר טוב לא מחפש תשובה מהירה. הוא מחפש את הרמז הנכון.</blockquote>
+
+        <button className="primary opening-button" type="button">
+          התחילו את החקירה <span>←</span>
+        </button>
+        <small className="opening-dismiss">תמונות אמיתיות • למידה בטוחה • בלי לחץ ובלי פסילות</small>
       </div>
     </section>
   );

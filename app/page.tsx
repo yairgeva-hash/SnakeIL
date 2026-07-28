@@ -115,16 +115,18 @@ export default function Home() {
       {screen !== "intro" && <TopBar hearts={hearts} xp={xp} streak={streak} onHome={() => setScreen("home")} />}
       <RewardLayer rewards={rewards} />
 
-      {screen === "intro" && <IntroScreen onStart={() => setScreen("home")} />}
-      {screen === "home" && <HomeScreen xp={xp} rank={rank} rankIcon={rankIcon} rankProgress={rankProgress} unlockedSpecies={discovered.length} totalSpecies={species.length} hasNextDiscovery={Boolean(nextDiscovery)} onJourney={() => setScreen("journey")} onJournal={() => setScreen("journal")} onAlbum={() => setScreen("album")} />}
-      {screen === "journey" && <JourneyScreen missions={missions} completed={completed} onOpen={openMission} onHome={() => setScreen("home")} onReset={resetProgress} />}
+      <div className="screen-stage" key={screen}>
+        {screen === "intro" && <IntroScreen onStart={() => setScreen("home")} />}
+        {screen === "home" && <HomeScreen xp={xp} rank={rank} rankIcon={rankIcon} rankProgress={rankProgress} unlockedSpecies={discovered.length} totalSpecies={species.length} hasNextDiscovery={Boolean(nextDiscovery)} onJourney={() => setScreen("journey")} onJournal={() => setScreen("journal")} onAlbum={() => setScreen("album")} />}
+        {screen === "journey" && <JourneyScreen missions={missions} completed={completed} onOpen={openMission} onHome={() => setScreen("home")} onReset={resetProgress} />}
 
-      {screen === "safety" && safety && <SafetyMission question={safety} index={questionIndex} total={safetyQuestions.length} selected={selected} feedbackLine={feedbackLine} onClose={() => setScreen("journey")} onChoose={(index) => chooseAnswer(index, safety.correct)} onNext={() => { if (questionIndex === safetyQuestions.length - 1) finishMission("safety", 40); else { setQuestionIndex(questionIndex + 1); setSelected(null); } }} />}
+        {screen === "safety" && safety && <SafetyMission question={safety} index={questionIndex} total={safetyQuestions.length} selected={selected} feedbackLine={feedbackLine} onClose={() => setScreen("journey")} onChoose={(index) => chooseAnswer(index, safety.correct)} onNext={() => { if (questionIndex === safetyQuestions.length - 1) finishMission("safety", 40); else { setQuestionIndex(questionIndex + 1); setSelected(null); } }} />}
 
-      {screen === "lesson" && activeMission && <CaseMission species={species} onClose={() => setScreen("journey")} onMicroReward={launchReward} onFinish={() => finishMission(activeMission.id, activeMission.xp)} />}
+        {screen === "lesson" && activeMission && <CaseMission species={species} onClose={() => setScreen("journey")} onMicroReward={launchReward} onFinish={() => finishMission(activeMission.id, activeMission.xp)} />}
 
-      {screen === "journal" && <JournalScreen species={species} discovered={discovered} completed={completed} rank={rank} rankIcon={rankIcon} rankProgress={rankProgress} hearts={hearts} onHome={() => setScreen("home")} />}
-      {screen === "album" && <AlbumScreen species={species} discovered={discovered} imageErrors={imageErrors} onImageError={(id) => setImageErrors((value) => ({ ...value, [id]: true }))} onHome={() => setScreen("home")} />}
+        {screen === "journal" && <JournalScreen species={species} discovered={discovered} completed={completed} rank={rank} rankIcon={rankIcon} rankProgress={rankProgress} hearts={hearts} onHome={() => setScreen("home")} />}
+        {screen === "album" && <AlbumScreen species={species} discovered={discovered} imageErrors={imageErrors} onImageError={(id) => setImageErrors((value) => ({ ...value, [id]: true }))} onHome={() => setScreen("home")} />}
+      </div>
       {pendingReveal && <SpeciesReveal item={pendingReveal} pageNumber={discovered.indexOf(pendingReveal.id) + 1} onJournal={() => { setPendingReveal(null); setScreen("journal"); }} onClose={() => setPendingReveal(null)} />}
     </main>
   );

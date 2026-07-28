@@ -1,4 +1,4 @@
-# בלשי הטבע — v1.0 Vertical Slice
+# בלשי הטבע — v1.1 Vertical Slice
 
 גרסת MVP ממוקדת שמיישמת תיק חקירה אחד מלא: **הצפע והמתחזה**.
 
@@ -21,3 +21,9 @@ npm run dev
 ```bash
 npm run build
 ```
+
+
+## v1.1
+- Cinematic explanatory opening screen
+- Unified field-notebook visual language
+- Lightweight page-turn transitions between screens
