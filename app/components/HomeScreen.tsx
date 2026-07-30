@@ -1,5 +1,87 @@
 import { Mushon } from "./Mushon";
 
-export function HomeScreen({ xp, rank, rankIcon, rankProgress, unlockedSpecies, totalSpecies, hasNextDiscovery, onJourney, onJournal, onAlbum }: { xp: number; rank: string; rankIcon: string; rankProgress: number; unlockedSpecies: number; totalSpecies: number; hasNextDiscovery: boolean; onJourney: () => void; onJournal: () => void; onAlbum: () => void }) {
-return <section className="hero notebook-page home-with-mushon"><div className="field-stamp">מחברת שדה · מסע 01</div><div className="home-mushon-hero"><Mushon size="hero" mood="happy" message="שלום, בלש טבע! תיק חדש מחכה לנו. נסתכל היטב, נאסוף ראיות ורק אז נחליט." /><div className="hero-copy"><span className="eyebrow">דיווח חדש התקבל</span><h1>יוצאים לזהות את נחשי ישראל</h1><p>מתבוננים בפרטים, משווים בין מינים ולומדים כיצד לפעול בבטחה — בלי להתקרב ובלי לגעת.</p><div className="actions"><button className="primary big" onClick={onJourney}>🧭 צא למשלחת עם מושון</button><button onClick={onJournal}>📖 יומן השדה</button></div></div></div><div className="profile-strip"><div><span className="metric-label">XP שנאסף</span><strong>{xp}</strong></div><div className="rank-progress" aria-label="התקדמות לדרגה הבאה"><span style={{ width: `${rankProgress}%` }} /></div><div><span className="metric-label">דרגת השטח</span><strong>{rankIcon} {rank}</strong></div><div><span className="metric-label">מינים ביומן</span><strong>{unlockedSpecies}/{totalSpecies}</strong></div></div><div className="discovery-teaser"><div className="discovery-seal">{hasNextDiscovery ? "?" : "✓"}</div><div><span>התגלית הבאה ביומן</span><strong>{hasNextDiscovery ? "מין מסתורי מחכה בסוף המשלחת" : "אספת את כל המינים בגרסה הזו"}</strong></div><b>{unlockedSpecies}/{totalSpecies}</b></div><div className="quick-grid"><button className="field-card" onClick={onJourney}><span>🧭</span><strong>משלחות</strong><small>משימות קצרות של 4–6 דקות</small></button><button className="field-card" onClick={onAlbum}><span>🃏</span><strong>אוסף המינים</strong><small>עשרת הנחשים הראשונים</small></button><button className="field-card" onClick={onJournal}><span>📖</span><strong>יומן השדה</strong><small>הישגים, רמזים ותגליות</small></button></div><div className="notice"><strong>מושון מזכיר:</strong> מזהים רק ממרחק. לא נוגעים, לא מרימים ולא מתקרבים לצילום.</div></section>;
+type HomeScreenProps = {
+  xp: number;
+  rank: string;
+  rankIcon: string;
+  rankProgress: number;
+  unlockedSpecies: number;
+  totalSpecies: number;
+  hasNextDiscovery: boolean;
+  onJourney: () => void;
+  onJournal: () => void;
+  onAlbum: () => void;
+};
+
+export function HomeScreen({
+  xp,
+  rank,
+  rankIcon,
+  rankProgress,
+  unlockedSpecies,
+  totalSpecies,
+  hasNextDiscovery,
+  onJourney,
+  onJournal,
+  onAlbum,
+}: HomeScreenProps) {
+  return (
+    <section className="home-v2 notebook-page" aria-labelledby="home-title">
+      <header className="home-v2-header">
+        <div className="home-v2-label">🍃 מחברת החקירה שלך 🍃</div>
+        <button className="home-v2-settings" type="button" aria-label="הגדרות">⚙️</button>
+      </header>
+
+      <div className="home-v2-stage">
+        <div className="home-v2-dialogue">
+          <strong>מושון</strong>
+          <p>שלום! אני מושון. בוא נפתור יחד את תיק החקירה הראשון.</p>
+        </div>
+        <Mushon size="hero" mood="happy" className="home-v2-mushon" />
+      </div>
+
+      <div className="home-v2-branding">
+        <h1 id="home-title">בלשי הטבע</h1>
+        <p>פותחים תיק. אוספים רמזים. מגלים את האמת.</p>
+      </div>
+
+      <button className="home-v2-primary" onClick={onJourney}>
+        <span aria-hidden="true">📓</span>
+        התחילו את החקירה
+        <b aria-hidden="true">←</b>
+      </button>
+
+      <nav className="home-v2-nav" aria-label="קיצורי דרך">
+        <button onClick={onAlbum}>
+          <span aria-hidden="true">🖼️</span>
+          <strong>אלבום</strong>
+          <small>גלריית הנחשים</small>
+        </button>
+        <button onClick={onJournal}>
+          <span aria-hidden="true">🏅</span>
+          <strong>הישגים</strong>
+          <small>{xp} נקודות ניסיון</small>
+        </button>
+        <button onClick={onJournal}>
+          <span aria-hidden="true">⚙️</span>
+          <strong>הגדרות</strong>
+          <small>התאמות ובקרה</small>
+        </button>
+      </nav>
+
+      <div className="home-v2-progress" aria-label="התקדמות במשחק">
+        <div><span>דרגה</span><strong>{rankIcon} {rank}</strong></div>
+        <div className="home-v2-progress-bar"><span style={{ width: `${rankProgress}%` }} /></div>
+        <div><span>מינים שנפתחו</span><strong>{unlockedSpecies}/{totalSpecies}</strong></div>
+      </div>
+
+      <p className="home-v2-safety">
+        <strong>זכרו:</strong> מזהים נחשים רק ממרחק. לא נוגעים, לא מרימים ולא מתקרבים לצילום.
+      </p>
+
+      <span className="sr-only">
+        {hasNextDiscovery ? "מין מסתורי נוסף מחכה בסוף המשלחת" : "כל המינים בגרסה הזו כבר נאספו"}
+      </span>
+    </section>
+  );
 }
