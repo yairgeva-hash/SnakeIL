@@ -1,15 +1,10 @@
 # Nature Detectives
 
-Current Version: 2.0.0
+Current version: 2.1.0
 
-Current Sprint: Home Screen Redesign
-
-Completed:
-- Rebuilt the mobile home layout
-- Integrated Moshon beside his dialogue instead of above content
-- Added a clear title, CTA and compact navigation
-- Added responsive rules for narrow phones
-- Preserved progress, rank and safety information
-
-Next Sprint:
-- Apply the same design system to journey and investigation screens
+## Completed in v2.1
+- Rebuilt the actual first screen (`IntroScreen`), not only the post-intro home screen.
+- Side-by-side mobile layout for Mushon and his short dialogue.
+- Title and primary action moved into the first viewport.
+- Compact three-item information row and safety note.
+- Isolated `intro-v21` CSS to prevent legacy opening-screen rules from overriding the redesign.
